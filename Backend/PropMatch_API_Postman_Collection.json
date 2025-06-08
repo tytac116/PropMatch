@@ -1,0 +1,414 @@
+{
+  "info": {
+    "name": "PropMatch API",
+    "description": "Comprehensive API collection for PropMatch - AI-powered property search and matching",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Checks",
+      "item": [
+        {
+          "name": "Root Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"],
+              "path": [""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "General Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search Service Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/search/health",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "search", "health"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Properties",
+      "item": [
+        {
+          "name": "Get All Properties (Default)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/properties/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "properties", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Properties with Pagination",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/properties/?skip=0&limit=5",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "properties", ""],
+              "query": [
+                {
+                  "key": "skip",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Filter by Property Type",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/properties/?property_type=House&limit=3",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "properties", ""],
+              "query": [
+                {
+                  "key": "property_type",
+                  "value": "House"
+                },
+                {
+                  "key": "limit",
+                  "value": "3"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Filter by Price Range",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/properties/?min_price=1000000&max_price=3000000&limit=5",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "properties", ""],
+              "query": [
+                {
+                  "key": "min_price",
+                  "value": "1000000"
+                },
+                {
+                  "key": "max_price",
+                  "value": "3000000"
+                },
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Filter by Bedrooms",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/properties/?bedrooms=3&limit=5",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "properties", ""],
+              "query": [
+                {
+                  "key": "bedrooms",
+                  "value": "3"
+                },
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Filter by City",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/properties/?city=Cape Town&limit=5",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "properties", ""],
+              "query": [
+                {
+                  "key": "city",
+                  "value": "Cape Town"
+                },
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Property Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/properties/stats/summary",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "properties", "stats", "summary"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Property by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/properties/{property_id}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "properties", "{property_id}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Property by Listing Number",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/properties/listing/{listing_number}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "properties", "listing", "{listing_number}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Search",
+      "item": [
+        {
+          "name": "AI-Powered Search - Family Home",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"3 bedroom house near schools and parks\",\n  \"filters\": {\n    \"property_type\": \"House\",\n    \"bedrooms\": 3\n  },\n  \"page\": 1,\n  \"page_size\": 5\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/search/?use_ai=true",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "search", ""],
+              "query": [
+                {
+                  "key": "use_ai",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "AI-Powered Search - Luxury Property",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"luxury apartment with sea view\",\n  \"filters\": {\n    \"min_price\": 5000000\n  },\n  \"page\": 1,\n  \"page_size\": 3\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/search/?use_ai=true",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "search", ""],
+              "query": [
+                {
+                  "key": "use_ai",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Basic Search - Apartment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"apartment near city center\",\n  \"page\": 1,\n  \"page_size\": 5\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/search/?use_ai=false",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "search", ""],
+              "query": [
+                {
+                  "key": "use_ai",
+                  "value": "false"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Simple Search - Cheap Apartment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"cheap apartment\",\n  \"limit\": 3,\n  \"use_ai\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/search/simple",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "search", "simple"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Simple Search - House with Garden",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"house with garden\",\n  \"limit\": 5,\n  \"use_ai\": false\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/search/simple",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "search", "simple"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Vector Search Test",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/search/test-vector?query=family home near amenities&limit=3",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "search", "test-vector"],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "family home near amenities"
+                },
+                {
+                  "key": "limit",
+                  "value": "3"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Property Explanation (Placeholder)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\"family home with garden and pool\""
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/search/explanation/{property_id}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "search", "explanation", "{property_id}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+} 
