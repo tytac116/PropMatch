@@ -1,0 +1,441 @@
+{
+	"info": {
+		"_postman_id": "propmatch-api-collection-v2",
+		"name": "PropMatch API Collection v2 - Complete",
+		"description": "**PropMatch Property Search API - Complete Collection**\n\nThis collection provides comprehensive testing for all PropMatch API endpoints. PropMatch is an AI-powered property search platform that combines vector similarity search with traditional filtering to deliver precise property matches.\n\n## Features\n- **AI-Powered Search**: Natural language property search with intelligent filter extraction\n- **Precise Scoring**: Realistic match scores (not generic multiples of 5)\n- **Complete Property Data**: Images, features, points of interest, and detailed specifications\n- **Vector Search**: Semantic understanding of property descriptions\n- **Traditional Endpoints**: Standard property listing and filtering\n\n## Base URL\n`http://localhost:8000`\n\n## Key Endpoints\n1. **Health Checks** - Verify service status\n2. **Property Listings** - Browse and filter properties\n3. **AI Search** - Natural language property search\n4. **Individual Properties** - Get detailed property information\n\n## Natural Language Search Examples\n- \"2 bedroom apartment in southern suburbs under 2 million rand\"\n- \"luxury house with pool and sea view in Clifton\"\n- \"3 bedroom family home near good schools\"\n- \"modern apartment with garden and parking\"",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Checks",
+			"description": "Endpoints to verify service health and availability",
+			"item": [
+				{
+					"name": "API Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/",
+							"host": ["{{base_url}}"],
+							"path": [""]
+						},
+						"description": "**Basic API Health Check**\n\nVerifies that the PropMatch API server is running and accessible.\n\n**Expected Response:**\n- Status: 200 OK\n- JSON response with API version and documentation links\n\n**Use Case:**\nUse this endpoint to verify the API is online before making other requests."
+					},
+					"response": []
+				},
+				{
+					"name": "Application Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": ["{{base_url}}"],
+							"path": ["health"]
+						},
+						"description": "**Application Health Check**\n\nVerifies the overall health of the PropMatch application.\n\n**Expected Response:**\n- Status: 200 OK\n- JSON response indicating healthy status\n\n**Use Case:**\nUse this for application monitoring and load balancer health checks."
+					},
+					"response": []
+				},
+				{
+					"name": "Search Service Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/health",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", "health"]
+						},
+						"description": "**Search Service Health Check**\n\nComprehensive health check for AI search capabilities including:\n- Vector search availability (Pinecone)\n- Supabase database connection\n- Enhanced search service status\n- Index statistics\n\n**Expected Response:**\n- Status: 200 OK\n- Detailed status of all search components\n- Vector database statistics (total vectors, dimensions, etc.)\n\n**Use Case:**\nCritical for verifying AI search functionality before performing searches."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Property Listings",
+			"description": "Browse and filter property listings with traditional parameters",
+			"item": [
+				{
+					"name": "Get All Properties (Paginated)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/properties/?skip=0&limit=5",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "properties", ""],
+							"query": [
+								{
+									"key": "skip",
+									"value": "0",
+									"description": "Number of properties to skip (for pagination)"
+								},
+								{
+									"key": "limit",
+									"value": "5",
+									"description": "Number of properties to return (max 100)"
+								}
+							]
+						},
+						"description": "**Get All Properties with Pagination**\n\nRetrieve a paginated list of all available properties.\n\n**Query Parameters:**\n- `skip` (int): Number of properties to skip (default: 0)\n- `limit` (int): Number of properties to return (max: 100, default: 20)\n\n**Response Includes:**\n- Complete property details (price, bedrooms, bathrooms, area)\n- Location information (neighborhood, city, province)\n- High-resolution images\n- Property features and amenities\n- Points of interest nearby\n- Property URL for external viewing\n\n**Use Case:**\nBrowse available properties without specific search criteria."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Properties with Filters",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/properties/?property_type=apartment&min_price=1000000&max_price=3000000&bedrooms=2&city=Cape Town&limit=10",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "properties", ""],
+							"query": [
+								{
+									"key": "property_type",
+									"value": "apartment",
+									"description": "Filter by property type (apartment, house, townhouse)"
+								},
+								{
+									"key": "min_price",
+									"value": "1000000",
+									"description": "Minimum price in ZAR"
+								},
+								{
+									"key": "max_price",
+									"value": "3000000",
+									"description": "Maximum price in ZAR"
+								},
+								{
+									"key": "bedrooms",
+									"value": "2",
+									"description": "Number of bedrooms"
+								},
+								{
+									"key": "city",
+									"value": "Cape Town",
+									"description": "Filter by city"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Number of results to return"
+								}
+							]
+						},
+						"description": "**Get Properties with Traditional Filters**\n\nFilter properties using traditional search parameters.\n\n**Available Filters:**\n- `property_type`: apartment, house, townhouse\n- `min_price`/`max_price`: Price range in ZAR\n- `bedrooms`: Number of bedrooms\n- `city`: Filter by city name\n- `suburb`: Filter by suburb/neighborhood\n\n**Use Case:**\nWhen users want to browse properties with specific criteria using dropdown filters rather than natural language search."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Property by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/properties/116045887",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "properties", "116045887"]
+						},
+						"description": "**Get Individual Property Details**\n\nRetrieve complete details for a specific property using its listing number.\n\n**Path Parameter:**\n- `property_id`: The property listing number (e.g., 116045887)\n\n**Response Includes:**\n- Full property description\n- All images and virtual tour links\n- Detailed features and amenities\n- Exact location and neighborhood info\n- Points of interest with distances\n- Property specifications (floor size, erf size, rates)\n- Agent contact information\n\n**Use Case:**\nWhen a user clicks on a property from search results to view full details."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Property by Listing Number",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/properties/listing/116061175",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "properties", "listing", "116061175"]
+						},
+						"description": "**Get Property by Listing Number**\n\nAlternative endpoint to retrieve property details using the listing number explicitly.\n\n**Path Parameter:**\n- `listing_number`: The property's unique listing identifier\n\n**Use Case:**\nWhen you have the specific listing number from Property24 or other sources."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Property Statistics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/properties/stats/summary",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "properties", "stats", "summary"]
+						},
+						"description": "**Property Database Statistics**\n\nGet summary statistics about the property database.\n\n**Response Includes:**\n- Total number of properties\n- Properties for sale vs. rent\n- Property type distribution (houses, apartments, etc.)\n- Price range (min, max, average)\n- Top cities by property count\n\n**Use Case:**\nDashboard widgets, analytics, and providing users with market overview information."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AI-Powered Search",
+			"description": "Natural language property search with intelligent scoring and filtering",
+			"item": [
+				{
+					"name": "Enhanced AI Search (Natural Language)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"2 bedroom apartment in southern suburbs under 2 million rand\",\n    \"limit\": 10,\n    \"page\": 1,\n    \"page_size\": 10\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						},
+						"description": "**Enhanced AI Search - Natural Language Property Search**\n\n🚀 **This is the main search endpoint for PropMatch!**\n\nUses advanced AI to understand natural language queries and extract filters intelligently.\n\n**Key Features:**\n- **Semantic Understanding**: Understands context and intent\n- **Automatic Filter Extraction**: Extracts price, bedrooms, location from natural language\n- **Precise Scoring**: Realistic match scores (30-90 range, not generic multiples)\n- **Vector Similarity**: Finds properties with similar descriptions\n\n**Request Body:**\n```json\n{\n    \"query\": \"natural language search\",\n    \"limit\": 10,\n    \"page\": 1,\n    \"page_size\": 10\n}\n```\n\n**Example Queries:**\n- \"2 bedroom apartment in southern suburbs under 2 million rand\"\n- \"luxury house with pool and sea view in Clifton\"\n- \"3 bedroom family home near good schools with garden\"\n- \"modern apartment with parking and security\"\n\n**Search Score Explained:**\nScores are calculated using:\n- 40% Vector similarity (semantic matching)\n- 35% Metadata matching (price, bedrooms, type, location)\n- 25% Location relevance (nearby amenities)\n\n**Use Case:**\nPrimary search method for users who want to describe what they're looking for naturally."
+					},
+					"response": []
+				},
+				{
+					"name": "AI Search - Luxury Properties",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"luxury house with pool and sea view\",\n    \"limit\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						},
+						"description": "**AI Search Example - Luxury Properties**\n\nExample of searching for high-end properties with specific amenities.\n\n**Query Analysis:**\n- **Property Type**: House (extracted from \"luxury house\")\n- **Features**: Pool, sea view (extracted from description)\n- **Price Range**: Will prioritize higher-priced properties\n\n**Expected Results:**\nProperties in premium locations like Clifton, Bantry Bay, Camps Bay with ocean views and pools."
+					},
+					"response": []
+				},
+				{
+					"name": "AI Search - Family Home",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"3 bedroom family home near good schools with garden\",\n    \"limit\": 8\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						},
+						"description": "**AI Search Example - Family-Oriented Properties**\n\nExample of searching for family-suitable properties.\n\n**Query Analysis:**\n- **Bedrooms**: 3 (extracted from \"3 bedroom\")\n- **Property Type**: House (extracted from \"family home\")\n- **Location Preference**: Near schools (proximity scoring)\n- **Features**: Garden (feature matching)\n\n**Expected Results:**\nFamily homes in suburbs like Newlands, Claremont, Rondebosch with good schools nearby."
+					},
+					"response": []
+				},
+				{
+					"name": "Simple Search (Quick Test)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"modern apartment with parking\",\n    \"limit\": 5,\n    \"use_ai\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/simple",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", "simple"]
+						},
+						"description": "**Simple Search - Quick Testing Endpoint**\n\nSimplified search endpoint for quick testing and integration.\n\n**Request Body:**\n```json\n{\n    \"query\": \"search terms\",\n    \"limit\": 5,\n    \"use_ai\": true\n}\n```\n\n**Response Format:**\nSimplified response with essential property information.\n\n**Use Case:**\nTesting, debugging, or when you need a lighter response format."
+					},
+					"response": []
+				},
+				{
+					"name": "Test Vector Search (Debug)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/test-vector?query=apartment near UCT&limit=3",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", "test-vector"],
+							"query": [
+								{
+									"key": "query",
+									"value": "apartment near UCT",
+									"description": "Test query for vector search"
+								},
+								{
+									"key": "limit",
+									"value": "3",
+									"description": "Number of results"
+								}
+							]
+						},
+						"description": "**Vector Search Test - Debug Endpoint**\n\nTesting endpoint that shows detailed vector search scoring and metadata.\n\n**Response Includes:**\n- Raw vector similarity scores\n- Property metadata from vector database\n- Index statistics\n- Detailed scoring breakdown\n\n**Use Case:**\nDebugging vector search functionality and understanding how similarity scores are calculated."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Search Variations",
+			"description": "Different search scenarios to test AI understanding",
+			"item": [
+				{
+					"name": "Search with Price Range",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"house under 5 million rand with 4 bedrooms\",\n    \"limit\": 6\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						},
+						"description": "**Search with Price Constraints**\n\nTests AI's ability to extract and apply price filters from natural language.\n\n**Expected Behavior:**\n- Extract \"under 5 million\" as max price filter\n- Extract \"4 bedrooms\" as bedroom filter\n- Prioritize houses within budget\n- Apply scoring bonus for exact matches"
+					},
+					"response": []
+				},
+				{
+					"name": "Search by Location",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"apartment in Newlands or Rondebosch near UCT\",\n    \"limit\": 8\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						},
+						"description": "**Location-Specific Search**\n\nTests AI's understanding of specific neighborhoods and landmark proximity.\n\n**Expected Behavior:**\n- Prioritize properties in Newlands and Rondebosch\n- Apply location scoring for proximity to UCT\n- Filter for apartments\n- Higher scores for closer properties"
+					},
+					"response": []
+				},
+				{
+					"name": "Search by Features",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"property with pool, garage, and garden for entertaining\",\n    \"limit\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						},
+						"description": "**Feature-Based Search**\n\nTests AI's ability to match specific property features and amenities.\n\n**Expected Behavior:**\n- Score properties with pools higher\n- Prioritize properties with garages\n- Bonus points for gardens\n- Understand \"entertaining\" context for larger properties"
+					},
+					"response": []
+				},
+				{
+					"name": "Search for Investment Property",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"investment property with rental potential near transport\",\n    \"limit\": 10\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						},
+						"description": "**Investment Property Search**\n\nTests AI's understanding of investment criteria and rental market factors.\n\n**Expected Behavior:**\n- Prioritize properties near public transport\n- Consider areas with good rental demand\n- Focus on properties with multiple income streams\n- Score proximity to amenities higher"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Set base URL if not already set",
+					"if (!pm.collectionVariables.get(\"base_url\")) {",
+					"    pm.collectionVariables.set(\"base_url\", \"http://localhost:8000\");",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Basic response tests",
+					"pm.test(\"Status code is successful\", function () {",
+					"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);",
+					"});",
+					"",
+					"pm.test(\"Response time is acceptable\", function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(10000);",
+					"});",
+					"",
+					"pm.test(\"Response has JSON content\", function () {",
+					"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		}
+	]
+} 

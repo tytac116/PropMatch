@@ -5,14 +5,11 @@ import logging
 
 from app.db.database import get_db, PropertyDB
 from app.models.property import Property, PropertySearchFilters
-from app.services.property_service import PropertyService
+from app.services.supabase_property_service import SupabasePropertyService
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
-
-# Initialize property service
-property_service = PropertyService()
 
 @router.get("/", response_model=List[Property])
 async def get_properties(
@@ -23,13 +20,15 @@ async def get_properties(
     max_price: Optional[int] = Query(None, description="Maximum price filter"),
     bedrooms: Optional[int] = Query(None, description="Number of bedrooms"),
     city: Optional[str] = Query(None, description="Filter by city"),
-    suburb: Optional[str] = Query(None, description="Filter by suburb"),
-    db: Session = Depends(get_db)
+    suburb: Optional[str] = Query(None, description="Filter by suburb")
 ):
     """
     Get all properties with optional filtering and pagination
     """
     try:
+        # Use Supabase service instead of direct PostgreSQL
+        property_service = SupabasePropertyService()
+        
         # Build filters
         filters = PropertySearchFilters(
             property_type=property_type,
@@ -41,7 +40,6 @@ async def get_properties(
         )
         
         properties = await property_service.get_properties(
-            db=db,
             skip=skip,
             limit=limit,
             filters=filters
@@ -55,23 +53,25 @@ async def get_properties(
 
 @router.get("/{property_id}", response_model=Property)
 async def get_property(
-    property_id: str,
-    db: Session = Depends(get_db)
+    property_id: str
 ):
     """
-    Get a specific property by ID
+    Get a specific property by ID (listing number)
     """
     try:
-        property_data = await property_service.get_property_by_id(
-            db=db,
-            property_id=property_id
-        )
+        property_service = SupabasePropertyService()
+        
+        # Convert to int for listing number lookup
+        listing_number = int(property_id)
+        property_data = await property_service.get_property_by_listing_number(listing_number)
         
         if not property_data:
             raise HTTPException(status_code=404, detail="Property not found")
         
         return property_data
         
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid property ID format")
     except HTTPException:
         raise
     except Exception as e:
@@ -80,23 +80,24 @@ async def get_property(
 
 @router.get("/listing/{listing_number}", response_model=Property)
 async def get_property_by_listing(
-    listing_number: str,
-    db: Session = Depends(get_db)
+    listing_number: str
 ):
     """
     Get a property by its listing number
     """
     try:
-        property_data = await property_service.get_property_by_listing_number(
-            db=db,
-            listing_number=listing_number
-        )
+        property_service = SupabasePropertyService()
+        
+        listing_num = int(listing_number)
+        property_data = await property_service.get_property_by_listing_number(listing_num)
         
         if not property_data:
             raise HTTPException(status_code=404, detail="Property not found")
         
         return property_data
         
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid listing number format")
     except HTTPException:
         raise
     except Exception as e:
@@ -104,12 +105,13 @@ async def get_property_by_listing(
         raise HTTPException(status_code=500, detail="Internal server error")
 
 @router.get("/stats/summary")
-async def get_property_stats(db: Session = Depends(get_db)):
+async def get_property_stats():
     """
     Get summary statistics about properties
     """
     try:
-        stats = await property_service.get_property_statistics(db=db)
+        property_service = SupabasePropertyService()
+        stats = await property_service.get_property_statistics()
         return stats
         
     except Exception as e:

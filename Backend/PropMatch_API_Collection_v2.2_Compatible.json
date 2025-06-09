@@ -1,0 +1,403 @@
+{
+	"info": {
+		"_postman_id": "propmatch-api-v2-2",
+		"name": "PropMatch API v2.2 - High Performance",
+		"description": "PropMatch Property Search API - Optimized Version\n\n🚀 Performance Improvements:\n- 89% speed boost (41s → 4s)\n- Batch database queries\n- Realistic percentage scoring\n- Unique decimal precision\n\n📊 Features:\n- AI-powered natural language search\n- 1,437 Cape Town properties\n- Advanced vector similarity matching\n- Smart price/location filtering",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Checks",
+			"item": [
+				{
+					"name": "API Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": ["{{base_url}}"],
+							"path": ["health"]
+						}
+					}
+				},
+				{
+					"name": "Application Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health/application",
+							"host": ["{{base_url}}"],
+							"path": ["health", "application"]
+						}
+					}
+				},
+				{
+					"name": "Search Service Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health/search",
+							"host": ["{{base_url}}"],
+							"path": ["health", "search"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Properties",
+			"item": [
+				{
+					"name": "List Properties",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/properties/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "properties", ""]
+						}
+					}
+				},
+				{
+					"name": "List with Pagination",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/properties/?skip=10&limit=5",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "properties", ""],
+							"query": [
+								{"key": "skip", "value": "10"},
+								{"key": "limit", "value": "5"}
+							]
+						}
+					}
+				},
+				{
+					"name": "Property Statistics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/properties/statistics",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "properties", "statistics"]
+						}
+					}
+				},
+				{
+					"name": "Get Specific Property",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/properties/115924555",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "properties", "115924555"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "AI Search - Performance Tests",
+			"item": [
+				{
+					"name": "Simple Bedroom Search (3-4s)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"3 bedroom house with garden\",\n  \"limit\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				},
+				{
+					"name": "Luxury Search (4-5s)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"luxury apartment with sea view in Clifton\",\n  \"limit\": 8\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				},
+				{
+					"name": "Budget Search with Price Filter",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"affordable 2 bedroom apartment under 2 million rand\",\n  \"limit\": 6\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				},
+				{
+					"name": "Pool & Garden Search",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"family home with pool and garden in southern suburbs\",\n  \"limit\": 7\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				},
+				{
+					"name": "Location-Specific Search",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"penthouse with ocean view in Sea Point or Bantry Bay\",\n  \"limit\": 6\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				},
+				{
+					"name": "Complex Multi-Criteria Search",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"3 bedroom house with pool, garden, and garage in good neighborhood under 5 million\",\n  \"limit\": 10\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Scoring System Tests",
+			"item": [
+				{
+					"name": "Perfect Match Test (95-100%)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"2 bedroom apartment with sea view in Sea Point\",\n  \"limit\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				},
+				{
+					"name": "Score Uniqueness Test",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"house with garage\",\n  \"limit\": 15\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				},
+				{
+					"name": "Impossible Query (Low Scores)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"castle with moat and drawbridge in medieval style\",\n  \"limit\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				},
+				{
+					"name": "Realistic Poor Match Test",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"spaceship landing pad with anti-gravity chamber\",\n  \"limit\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Performance Benchmarks",
+			"item": [
+				{
+					"name": "Simple Query Performance",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"2 bedroom apartment\",\n  \"limit\": 10\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				},
+				{
+					"name": "Complex Query Performance",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"luxury 3 bedroom house with pool, garden, garage, and sea view in Atlantic Seaboard under 15 million rand\",\n  \"limit\": 15\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				},
+				{
+					"name": "Large Batch Performance",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"house with garden\",\n  \"limit\": 20\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		}
+	]
+} 

@@ -154,6 +154,38 @@ class SupabasePropertyService:
             logger.error(f"Error fetching property {listing_number}: {e}")
             return None
     
+    async def get_properties_batch(self, listing_numbers: List[int]) -> List[Property]:
+        """PERFORMANCE CRITICAL: Batch fetch multiple properties by listing numbers"""
+        
+        if not self.supabase or not listing_numbers:
+            return []
+        
+        try:
+            # Single query for all properties - MAJOR PERFORMANCE IMPROVEMENT
+            result = self.supabase.table('properties').select("*").in_('listing_number', listing_numbers).execute()
+            
+            if not result.data:
+                logger.warning(f"No properties found for {len(listing_numbers)} listing numbers")
+                return []
+            
+            # Convert all properties at once
+            properties = []
+            for db_prop in result.data:
+                try:
+                    prop = self._convert_supabase_to_pydantic(db_prop)
+                    properties.append(prop)
+                except Exception as e:
+                    listing_num = db_prop.get('listing_number', 'unknown')
+                    logger.warning(f"Error converting property {listing_num}: {e}")
+                    continue
+            
+            logger.info(f"Batch fetched {len(properties)} properties from {len(listing_numbers)} requested")
+            return properties
+            
+        except Exception as e:
+            logger.error(f"Error in batch fetch for {len(listing_numbers)} properties: {e}")
+            return []
+    
     async def get_property_statistics(self) -> Dict[str, Any]:
         """Get summary statistics about properties"""
         
