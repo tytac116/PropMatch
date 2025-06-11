@@ -13,25 +13,45 @@ interface PropertyCardProps {
   property: Property
   showScore?: boolean
   className?: string
+  searchTerm?: string
 }
 
-export function PropertyCard({ property, showScore = true, className }: PropertyCardProps) {
+export function PropertyCard({ property, showScore = true, className, searchTerm }: PropertyCardProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [imageError, setImageError] = useState(false)
+
+  // Use placeholder if no images or current image failed to load
+  const hasImages = property.images && property.images.length > 0 && !imageError
+  const currentImage = hasImages ? property.images[currentImageIndex] : '/placeholder-property.svg'
+
+  // Build URL with search context if available
+  const propertyUrl = searchTerm && searchTerm.trim() 
+    ? `/property/${property.id}?q=${encodeURIComponent(searchTerm.trim())}`
+    : `/property/${property.id}`
 
   const nextImage = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
+    if (hasImages) {
     setCurrentImageIndex((prevIndex) => 
       prevIndex === property.images.length - 1 ? 0 : prevIndex + 1
     )
+    }
   }
 
   const prevImage = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
+    if (hasImages) {
     setCurrentImageIndex((prevIndex) => 
       prevIndex === 0 ? property.images.length - 1 : prevIndex - 1
     )
+    }
+  }
+
+  const handleImageError = () => {
+    console.log('Image failed to load:', property.images?.[currentImageIndex])
+    setImageError(true)
   }
   
   const formattedPrice = formatCurrency(property.price, property.currency)
@@ -44,7 +64,7 @@ export function PropertyCard({ property, showScore = true, className }: Property
   }
 
   return (
-    <Link href={`/property/${property.id}`}>
+    <Link href={propertyUrl}>
       <Card className={cn(
         "overflow-hidden transition-all duration-300 hover:shadow-lg",
         "transform hover:-translate-y-1",
@@ -52,16 +72,17 @@ export function PropertyCard({ property, showScore = true, className }: Property
       )}>
         <div className="relative aspect-[16/10] overflow-hidden">
           <Image 
-            src={property.images[currentImageIndex]} 
+            src={currentImage} 
             alt={property.title}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className="object-cover transition-transform duration-500 hover:scale-105"
             priority
+            onError={handleImageError}
           />
           
-          {/* Image navigation */}
-          {property.images.length > 1 && (
+          {/* Image navigation - only show if we have multiple real images */}
+          {hasImages && property.images.length > 1 && (
             <>
               <button 
                 onClick={prevImage} 
