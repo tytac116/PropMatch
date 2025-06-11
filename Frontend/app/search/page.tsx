@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { SlidersHorizontal, AlertCircle } from 'lucide-react'
 import { searchProperties, PerformanceMonitor as PerfMonitorClass, APIError } from '@/lib/api'
@@ -104,7 +104,8 @@ interface SearchResult {
   message?: string
 }
 
-export default function SearchPage() {
+// Separate component that uses useSearchParams
+function SearchPageContent() {
   const searchParams = useSearchParams()
   const initialQuery = searchParams.get('q') || ''
   const initialFilter = (searchParams.get('filter') as 'buy' | 'rent' | null) || 'buy'
@@ -553,5 +554,36 @@ export default function SearchPage() {
         )}
       </div>
     </div>
+  )
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-background">
+        <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <SearchBar 
+              onSearch={() => {}} 
+              initialQuery="" 
+              initialFilter="buy"
+            />
+          </div>
+        </div>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="py-12 text-center">
+            <div className="max-w-md mx-auto space-y-4 px-4">
+              <div className="text-6xl">🏠</div>
+              <h3 className="text-lg font-semibold">Loading search...</h3>
+              <p className="text-muted-foreground">
+                Preparing your property search experience.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    }>
+      <SearchPageContent />
+    </Suspense>
   )
 }
