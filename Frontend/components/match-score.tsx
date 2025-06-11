@@ -62,7 +62,7 @@ export function MatchScore({ property, className, size = 'md' }: MatchScoreProps
           sizeClasses,
           scoreColor
         )}>
-          {score}%
+          {Math.round(score)}%
         </span>
       </div>
       

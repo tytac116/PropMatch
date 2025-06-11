@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { getProperty } from '@/lib/api'
-import { PropertyViewer } from '@/components/property-viewer'
+import { PropertyViewerWithCache } from '@/components/property-viewer-with-cache'
 import { Loader2 } from 'lucide-react'
 
 // Loading component
@@ -56,11 +56,11 @@ async function PropertyContent({
       features: property.features || [],
       status: mapPropertyStatus(property.status),
       listedDate: property.listedDate || new Date().toISOString(),
-      searchScore: property.searchScore,
+      searchScore: property.searchScore, // Will be enhanced by PropertyViewerWithCache
       matchExplanation: undefined
     }
     
-    return <PropertyViewer 
+    return <PropertyViewerWithCache 
       property={frontendProperty} 
       searchTerm={searchTerm}
       enableStreaming={!!searchTerm} // Only enable streaming if we have a search term

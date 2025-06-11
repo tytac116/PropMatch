@@ -2,6 +2,7 @@
 
 import { Property } from '@/lib/mock-data'
 import { PropertyCard } from '@/components/property-card'
+import { cn } from '@/lib/utils'
 
 interface PropertyGridProps {
   properties: Property[]
@@ -24,16 +25,15 @@ export function PropertyGrid({ properties, searchTerm, className }: PropertyGrid
   }
 
   return (
-    <div className={className}>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {properties.map((property) => (
-          <PropertyCard 
-            key={property.id} 
-            property={property} 
-            searchTerm={searchTerm}
-          />
-        ))}
-      </div>
+    <div className={cn("grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 auto-rows-fr", className)}>
+      {properties.map((property) => (
+        <PropertyCard 
+          key={property.id} 
+          property={property} 
+          searchTerm={searchTerm}
+          className="h-full"
+        />
+      ))}
     </div>
   )
 }

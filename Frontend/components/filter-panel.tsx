@@ -32,7 +32,7 @@ interface FilterPanelProps {
 }
 
 const PROPERTY_TYPES = ['apartment', 'house', 'villa', 'condo', 'townhouse']
-const BEDROOM_OPTIONS = ['Any', '0', '1', '2', '3', '4', '5+']
+const BEDROOM_OPTIONS = ['Any', '1', '2', '3', '4', '5+']
 const BATHROOM_OPTIONS = ['Any', '1', '2', '3', '4', '5+']
 const SORT_OPTIONS = [
   { value: 'match_score', label: 'AI Match Score' },

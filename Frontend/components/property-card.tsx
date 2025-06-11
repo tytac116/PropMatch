@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import { useState } from 'react'
 import Link from 'next/link'
-import { BedDouble, Bath, Move, MapPin, Tag, Calendar, Home } from 'lucide-react'
+import { BedDouble, Bath, Move, MapPin, Tag, Calendar, Home, Loader2 } from 'lucide-react'
 import { cn, formatCurrency, getScoreColor, truncateText } from '@/lib/utils'
 import { Property } from '@/lib/mock-data'
 import { Badge } from '@/components/ui/badge'
@@ -19,6 +19,7 @@ interface PropertyCardProps {
 export function PropertyCard({ property, showScore = true, className, searchTerm }: PropertyCardProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [imageError, setImageError] = useState(false)
+  const [isClicked, setIsClicked] = useState(false)
 
   // Use placeholder if no images or current image failed to load
   const hasImages = property.images && property.images.length > 0 && !imageError
@@ -28,6 +29,12 @@ export function PropertyCard({ property, showScore = true, className, searchTerm
   const propertyUrl = searchTerm && searchTerm.trim() 
     ? `/property/${property.id}?q=${encodeURIComponent(searchTerm.trim())}`
     : `/property/${property.id}`
+
+  const handleCardClick = () => {
+    setIsClicked(true)
+    // Reset after a short delay to prevent stuck state
+    setTimeout(() => setIsClicked(false), 2000)
+  }
 
   const nextImage = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -64,13 +71,23 @@ export function PropertyCard({ property, showScore = true, className, searchTerm
   }
 
   return (
-    <Link href={propertyUrl}>
+    <Link href={propertyUrl} onClick={handleCardClick}>
       <Card className={cn(
-        "overflow-hidden transition-all duration-300 hover:shadow-lg",
-        "transform hover:-translate-y-1",
+        "overflow-hidden transition-all duration-300 hover:shadow-lg cursor-pointer h-full flex flex-col",
+        "transform hover:-translate-y-1 active:scale-[0.98] active:shadow-md",
+        isClicked && "scale-[0.98] shadow-md opacity-75",
         className
       )}>
         <div className="relative aspect-[16/10] overflow-hidden">
+          {/* Loading overlay */}
+          {isClicked && (
+            <div className="absolute inset-0 bg-black/20 flex items-center justify-center z-50">
+              <div className="bg-white/90 rounded-full p-2">
+                <Loader2 className="h-6 w-6 animate-spin text-primary" />
+              </div>
+            </div>
+          )}
+          
           <Image 
             src={currentImage} 
             alt={property.title}
@@ -101,7 +118,7 @@ export function PropertyCard({ property, showScore = true, className, searchTerm
                 </svg>
               </button>
               <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
-                {property.images.map((_, idx) => (
+                {property.images.slice(0, 5).map((_, idx) => (
                   <div 
                     key={idx} 
                     className={cn(
@@ -112,6 +129,11 @@ export function PropertyCard({ property, showScore = true, className, searchTerm
                     )}
                   />
                 ))}
+                {property.images.length > 5 && (
+                  <div className="text-white text-xs bg-black/50 rounded-full px-1">
+                    +{property.images.length - 5}
+                  </div>
+                )}
               </div>
             </>
           )}
@@ -130,21 +152,21 @@ export function PropertyCard({ property, showScore = true, className, searchTerm
                 "text-xs font-bold px-2 py-1 rounded-md shadow-sm",
                 scoreColor
               )}>
-                {score}% Match
+                {Math.round(score)}% Match
               </div>
             </div>
           )}
         </div>
 
-        <CardContent className="p-4">
+        <CardContent className="p-4 flex-1 flex flex-col">
           <h3 className="font-semibold text-lg line-clamp-1 mb-1">{property.title}</h3>
           
           <div className="flex items-center text-sm text-muted-foreground mb-3">
-            <MapPin className="h-3.5 w-3.5 mr-1" />
+            <MapPin className="h-3.5 w-3.5 mr-1 flex-shrink-0" />
             <span className="line-clamp-1">{property.location.neighborhood}, {property.location.city}</span>
           </div>
           
-          <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+          <p className="text-sm text-muted-foreground mb-3 line-clamp-2 flex-1">
             {truncateText(property.description, 120)}
           </p>
           
@@ -155,18 +177,20 @@ export function PropertyCard({ property, showScore = true, className, searchTerm
             </div>
           </div>
           
-          <div className="grid grid-cols-3 gap-2 text-sm">
-            <div className="flex flex-col items-center bg-muted/40 rounded-md p-2">
-              <BedDouble className="h-4 w-4 mb-1" />
-              <span>{property.bedrooms} {property.bedrooms === 1 ? 'Bed' : 'Beds'}</span>
+          <div className="grid grid-cols-3 gap-2 text-sm mt-auto">
+            <div className="flex flex-col items-center bg-muted/40 rounded-md p-2 h-16 justify-center">
+              <BedDouble className="h-4 w-4 mb-1 flex-shrink-0" />
+              <span className="text-center leading-tight text-xs">{property.bedrooms} {property.bedrooms === 1 ? 'Bed' : 'Beds'}</span>
             </div>
-            <div className="flex flex-col items-center bg-muted/40 rounded-md p-2">
-              <Bath className="h-4 w-4 mb-1" />
-              <span>{property.bathrooms} {property.bathrooms === 1 ? 'Bath' : 'Baths'}</span>
+            <div className="flex flex-col items-center bg-muted/40 rounded-md p-2 h-16 justify-center">
+              <Bath className="h-4 w-4 mb-1 flex-shrink-0" />
+              <span className="text-center leading-tight text-xs">
+                {property.bathrooms % 1 === 0 ? property.bathrooms : property.bathrooms.toFixed(1)} {property.bathrooms === 1 ? 'Bath' : 'Baths'}
+              </span>
             </div>
-            <div className="flex flex-col items-center bg-muted/40 rounded-md p-2">
-              <Move className="h-4 w-4 mb-1" />
-              <span>{property.area} {property.areaUnit}</span>
+            <div className="flex flex-col items-center bg-muted/40 rounded-md p-2 h-16 justify-center">
+              <Move className="h-4 w-4 mb-1 flex-shrink-0" />
+              <span className="text-center leading-tight text-xs">{property.area} {property.areaUnit}</span>
             </div>
           </div>
         </CardContent>

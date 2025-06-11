@@ -2,17 +2,17 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { SlidersHorizontal, AlertCircle, Loader2 } from 'lucide-react'
+import { SlidersHorizontal, AlertCircle } from 'lucide-react'
 import { searchProperties, PerformanceMonitor as PerfMonitorClass, APIError } from '@/lib/api'
 import type { Property as APIProperty, SearchResponse } from '@/lib/api'
 import { PropertyGrid } from '@/components/property-grid'
 import { SearchBar } from '@/components/search-bar'
 import { FilterPanel, FilterOptions } from '@/components/filter-panel'
-import { PerformanceMonitor } from '@/components/performance-monitor'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { suggestionQueries } from '@/lib/mock-data'
+import { AnimatedSearchLoader } from '@/components/animated-search-loader'
 
 // Transform API property to frontend property format
 function transformAPIProperty(apiProperty: APIProperty): Property {
@@ -101,10 +101,6 @@ interface SearchResult {
   properties: Property[]
   searchTerm: string
   totalResults: number
-  timing?: {
-    total_ms: number
-    [key: string]: number
-  }
   message?: string
 }
 
@@ -122,9 +118,9 @@ export default function SearchPage() {
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([])
   const [activeFilters, setActiveFilters] = useState<FilterOptions | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [currentSearchQuery, setCurrentSearchQuery] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
-  const [performanceData, setPerformanceData] = useState<{ total_ms?: number } | null>(null)
   
   // Session-based caching key
   const getCacheKey = (query: string, filter: string) => `search_${query.trim()}_${filter}`
@@ -173,13 +169,23 @@ export default function SearchPage() {
   // Effect to handle URL parameter changes
   useEffect(() => {
     if (initialQuery) {
-      // Check for cached results first
-      const cached = loadCachedResults(initialQuery, initialFilter)
-      if (cached) {
-        setSearchResults(cached)
-        console.log('Used cached search results, no API call needed')
+      if (initialFilter === 'rent') {
+        // For rent, show empty state with message but preserve query in URL
+        setSearchResults({
+          properties: [],
+          searchTerm: initialQuery,
+          totalResults: 0,
+          message: 'Rental properties are coming soon! Switch to "Buy" to see available properties for sale.'
+        })
       } else {
-        performSearch(initialQuery, initialFilter as 'buy' | 'rent')
+        // Check for cached results first
+        const cached = loadCachedResults(initialQuery, initialFilter)
+        if (cached) {
+          setSearchResults(cached)
+          console.log('Used cached search results, no API call needed')
+        } else {
+          performSearch(initialQuery, initialFilter as 'buy' | 'rent')
+        }
       }
     } else {
       // Show empty state when no query
@@ -207,6 +213,7 @@ export default function SearchPage() {
     }
 
     setIsLoading(true)
+    setCurrentSearchQuery(query.trim())
     setError(null)
     
     try {
@@ -271,7 +278,6 @@ export default function SearchPage() {
         properties: finalProperties,
         searchTerm: query,
         totalResults: finalProperties.length,
-        timing: response.timing,
         message: filterMessage
       }
 
@@ -280,13 +286,9 @@ export default function SearchPage() {
       // Save to cache for faster back navigation
       saveCachedResults(query, filter, results)
       
-      setPerformanceData({ total_ms: response.__duration })
-      
       console.log('Search completed:', {
         query,
         results: finalProperties.length,
-        timing: response.timing,
-        clientDuration: response.__duration,
         filter,
         filtered: filteredByStatus.length,
         total: transformedProperties.length
@@ -310,6 +312,15 @@ export default function SearchPage() {
   }
   
   const handleSearch = (query: string, filter: 'buy' | 'rent') => {
+    if (filter === 'rent') {
+      // Don't perform search for rent, just update URL to preserve state
+      const url = new URL(window.location.href)
+      url.searchParams.set('q', query)
+      url.searchParams.set('filter', filter)
+      window.history.pushState({}, '', url)
+      return
+    }
+    
     performSearch(query, filter)
     
     // Update URL without refreshing the page
@@ -332,17 +343,9 @@ export default function SearchPage() {
           onSearch={handleSearch} 
           className="mb-6"
           suggestions={suggestionQueries}
+          initialQuery={initialQuery}
+          initialFilter={initialFilter}
         />
-
-        {/* Performance indicator */}
-        {performanceData?.total_ms && (
-          <div className="text-center mb-4">
-            <span className="text-sm text-muted-foreground">
-              Search completed in {performanceData.total_ms.toFixed(0)}ms
-              {searchResults.timing && ` (backend: ${searchResults.timing.total_ms.toFixed(0)}ms)`}
-            </span>
-          </div>
-        )}
 
         {/* Error display */}
         {error && (
@@ -353,10 +356,7 @@ export default function SearchPage() {
         )}
         
         {isLoading ? (
-          <div className="py-12 flex flex-col items-center justify-center">
-            <Loader2 className="w-16 h-16 text-primary animate-spin" />
-            <p className="mt-4 text-muted-foreground">Searching properties with AI...</p>
-          </div>
+          <AnimatedSearchLoader searchQuery={currentSearchQuery} />
         ) : (
           searchResults.searchTerm || searchResults.properties.length > 0 ? (
             <div className="flex gap-6">
@@ -366,11 +366,6 @@ export default function SearchPage() {
                   <FilterPanel
                     properties={searchResults.properties}
                     onFilterChange={handleFilterChange}
-                  />
-                  {/* Performance Monitor */}
-                  <PerformanceMonitor 
-                    searchTime={performanceData?.total_ms}
-                    className="w-full"
                   />
                 </div>
               </div>
@@ -388,7 +383,8 @@ export default function SearchPage() {
                             : 'Start your search above'
                         }
                       </h2>
-                      {searchResults.message && (
+                      {/* Remove technical search message, keep only user-friendly message if needed */}
+                      {searchResults.message && !searchResults.message.includes('Vector+BM25+AI') && (
                         <p className="text-sm text-muted-foreground">{searchResults.message}</p>
                       )}
                       {activeFilters && (
@@ -456,9 +452,27 @@ export default function SearchPage() {
                         </SheetContent>
                       </Sheet>
                       
+                      {/* Enhanced Search Query Display */}
                       {searchResults.searchTerm && searchResults.searchTerm.trim() && (
-                        <div className="text-sm text-muted-foreground">
-                          <span>Search: &quot;{searchResults.searchTerm}&quot;</span>
+                        <div 
+                          className="bg-gradient-to-r from-muted/50 to-muted/30 dark:from-muted/20 dark:to-muted/10 border border-border rounded-lg px-4 py-2 max-w-md hover:from-muted/70 hover:to-muted/50 dark:hover:from-muted/30 dark:hover:to-muted/20 transition-all duration-200 cursor-help"
+                          title={searchResults.searchTerm}
+                        >
+                          <div className="flex items-center gap-2">
+                            <div className="flex-shrink-0">
+                              <svg className="h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                              </svg>
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
+                                Search Query
+                              </p>
+                              <p className="text-sm font-medium text-foreground truncate">
+                                "{searchResults.searchTerm}"
+                              </p>
+                            </div>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -482,12 +496,25 @@ export default function SearchPage() {
                   ) : searchResults.searchTerm ? (
                     <div className="py-12 text-center">
                       <div className="max-w-md mx-auto space-y-4">
-                        <div className="text-6xl">😔</div>
-                        <h3 className="text-lg font-semibold">No properties found</h3>
-                        <p className="text-muted-foreground">
-                          We couldn't find any properties matching "{searchResults.searchTerm}". 
-                          Try adjusting your search terms or filters.
-                        </p>
+                        {initialFilter === 'rent' ? (
+                          <>
+                            <div className="text-6xl">🏠</div>
+                            <h3 className="text-lg font-semibold">Rental Properties Coming Soon!</h3>
+                            <p className="text-muted-foreground">
+                              We're working hard to bring you rental listings for "{searchResults.searchTerm}". 
+                              For now, switch to the <strong>Buy</strong> tab to explore amazing properties for sale!
+                            </p>
+                          </>
+                        ) : (
+                          <>
+                            <div className="text-6xl">😔</div>
+                            <h3 className="text-lg font-semibold">No properties found</h3>
+                            <p className="text-muted-foreground">
+                              We couldn't find any properties matching "{searchResults.searchTerm}". 
+                              Try adjusting your search terms or filters.
+                            </p>
+                          </>
+                        )}
                       </div>
                     </div>
                   ) : (

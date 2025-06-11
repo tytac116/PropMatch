@@ -11,13 +11,30 @@ interface SearchBarProps {
   onSearch: (query: string, filter: 'buy' | 'rent') => void;
   className?: string;
   suggestions?: string[];
+  initialQuery?: string;
+  initialFilter?: 'buy' | 'rent';
 }
 
-export function SearchBar({ onSearch, className, suggestions = [] }: SearchBarProps) {
-  const [query, setQuery] = useState('')
-  const [filter, setFilter] = useState<'buy' | 'rent'>('buy')
+export function SearchBar({ onSearch, className, suggestions = [], initialQuery = '', initialFilter = 'buy' }: SearchBarProps) {
+  const [query, setQuery] = useState(initialQuery)
+  const [filter, setFilter] = useState<'buy' | 'rent'>(initialFilter)
   const [showSuggestions, setShowSuggestions] = useState(false)
+  const [showRentMessage, setShowRentMessage] = useState(false)
   const searchContainerRef = useRef<HTMLDivElement>(null)
+
+  // Update query when initialQuery changes (e.g., from URL params)
+  useEffect(() => {
+    if (initialQuery && initialQuery !== query) {
+      setQuery(initialQuery)
+    }
+  }, [initialQuery])
+
+  // Update filter when initialFilter changes
+  useEffect(() => {
+    if (initialFilter && initialFilter !== filter) {
+      setFilter(initialFilter)
+    }
+  }, [initialFilter])
 
   // Handle click outside to close suggestions
   useEffect(() => {
@@ -48,9 +65,20 @@ export function SearchBar({ onSearch, className, suggestions = [] }: SearchBarPr
   }, [])
 
   const handleSearch = () => {
-    if (query.trim()) {
+    if (query.trim() && filter === 'buy') {
       onSearch(query, filter)
       setShowSuggestions(false)
+    } else if (filter === 'rent') {
+      setShowRentMessage(true)
+      setTimeout(() => setShowRentMessage(false), 3000) // Hide after 3 seconds
+    }
+  }
+
+  const handleFilterChange = (value: 'buy' | 'rent') => {
+    setFilter(value)
+    if (value === 'rent') {
+      setShowRentMessage(true)
+      setTimeout(() => setShowRentMessage(false), 3000)
     }
   }
 
@@ -87,7 +115,7 @@ export function SearchBar({ onSearch, className, suggestions = [] }: SearchBarPr
   return (
     <div className={cn("w-full max-w-3xl mx-auto", className)}>
       <div className="flex flex-col items-center space-y-4 w-full">
-        <Tabs defaultValue="buy" className="w-full max-w-md" onValueChange={(value) => setFilter(value as 'buy' | 'rent')}>
+        <Tabs value={filter} className="w-full max-w-md" onValueChange={(value) => handleFilterChange(value as 'buy' | 'rent')}>
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="buy" className="text-lg">Buy</TabsTrigger>
             <TabsTrigger value="rent" className="text-lg">Rent</TabsTrigger>
@@ -150,6 +178,20 @@ export function SearchBar({ onSearch, className, suggestions = [] }: SearchBarPr
               </ul>
             </div>
           </div>
+
+          {/* Rent Coming Soon Message */}
+          {showRentMessage && (
+            <div className="absolute z-20 w-full mt-1 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg shadow-lg p-4">
+              <div className="text-center">
+                <div className="text-blue-600 dark:text-blue-400 font-medium mb-1">
+                  🏠 Rental Properties Coming Soon!
+                </div>
+                <div className="text-sm text-blue-600/80 dark:text-blue-400/80">
+                  We're working hard to bring you rental listings. For now, explore our amazing properties for sale!
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

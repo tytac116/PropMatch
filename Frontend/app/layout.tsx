@@ -10,6 +10,11 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'PropMatch | AI-Powered Property Search for Cape Town',
   description: 'Find your perfect property in Cape Town using natural language search powered by AI',
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg'
+  }
 }
 
 export default function RootLayout({
