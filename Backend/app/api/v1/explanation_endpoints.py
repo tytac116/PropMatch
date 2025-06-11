@@ -3,7 +3,7 @@ Property Explanation Endpoints
 AI-powered property match explanations with caching and streaming
 """
 
-from fastapi import APIRouter, HTTPException, status, Query
+from fastapi import APIRouter, HTTPException, status, Query, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from typing import Dict, Any, Optional
@@ -13,6 +13,13 @@ import json
 from app.services.explanation_service import explanation_service, PropertyExplanation
 from app.core.redis_cache import explanation_cache
 from app.services.supabase_property_service import SupabasePropertyService
+from app.core.security import (
+    rate_limit_explanation,
+    rate_limit_general,
+    rate_limit_strict,
+    validate_search_input,
+    security_middleware
+)
 
 logger = logging.getLogger(__name__)
 
@@ -25,19 +32,37 @@ class ExplanationRequest(BaseModel):
     """Request model for property explanation"""
     search_query: str
     listing_number: str
+    
+    class Config:
+        # Add validation
+        str_strip_whitespace = True
+        min_anystr_length = 1
+        max_anystr_length = 500
 
 class StreamingExplanationRequest(BaseModel):
     """Request model for streaming property explanation"""
     search_query: str
+    
+    class Config:
+        # Add validation
+        str_strip_whitespace = True
+        min_anystr_length = 1
+        max_anystr_length = 500
 
 @router.get("/health/")
-async def explanation_health():
-    """Health check for explanation service"""
+@rate_limit_general
+async def explanation_health(request: Request):
+    """
+    Health check for explanation service
+    
+    Security: General rate limiting (100 requests/minute per IP)
+    """
     cache_stats = explanation_cache.get_cache_stats()
     
     return {
         "status": "healthy",
         "service": "Property Explanation Service",
+        "security": "enabled",
         "components": {
             "openai_client": explanation_service.openai_client is not None,
             "streaming_llm": explanation_service.streaming_llm is not None,
@@ -48,42 +73,43 @@ async def explanation_health():
     }
 
 @router.post("/generate/", response_model=PropertyExplanation)
-async def generate_property_explanation(request: ExplanationRequest):
+@rate_limit_explanation
+async def generate_property_explanation(request: Request, explanation_request: ExplanationRequest):
     """
     Generate AI explanation for property match (cached)
     
     Returns structured explanation with positive/negative points based on user's search query
+    
+    Security: Rate limited to 5 requests/minute per IP, input validation, prompt injection protection
     """
     try:
-        # Validate input
-        if not request.search_query.strip():
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Search query is required"
-            )
+        # Validate and sanitize search input
+        sanitized_query = validate_search_input(explanation_request.search_query)
         
-        if not request.listing_number.strip():
+        # Validate listing number (basic sanitization)
+        listing_number = explanation_request.listing_number.strip()
+        if not listing_number or len(listing_number) > 50:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Listing number is required"
+                detail="Invalid listing number"
             )
         
         # Get property data from search service
-        property_data = await _get_property_data(request.listing_number)
+        property_data = await _get_property_data(listing_number)
         if not property_data:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Property {request.listing_number} not found"
+                detail=f"Property {listing_number} not found"
             )
         
-        # Generate explanation
+        # Generate explanation with sanitized input
         explanation = await explanation_service.generate_explanation(
-            search_query=request.search_query,
-            listing_number=request.listing_number,
+            search_query=sanitized_query,
+            listing_number=listing_number,
             property_data=property_data
         )
         
-        logger.info(f"Generated explanation for property {request.listing_number} (cached: {explanation.cached})")
+        logger.info(f"Generated explanation for property {listing_number} (cached: {explanation.cached})")
         return explanation
         
     except HTTPException:
@@ -92,31 +118,33 @@ async def generate_property_explanation(request: ExplanationRequest):
         logger.error(f"Error generating explanation: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to generate explanation: {str(e)}"
+            detail="Failed to generate explanation"
         )
 
 @router.post("/stream/{listing_number}")
+@rate_limit_explanation
 async def stream_property_explanation(
+    request: Request,
     listing_number: str, 
-    request: StreamingExplanationRequest
+    streaming_request: StreamingExplanationRequest
 ):
     """
     Stream AI explanation generation in real-time
     
     Returns Server-Sent Events (SSE) stream for real-time explanation generation
+    
+    Security: Rate limited to 5 requests/minute per IP, input validation, prompt injection protection
     """
     try:
-        # Validate input
-        if not request.search_query.strip():
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Search query is required"
-            )
+        # Validate and sanitize search input
+        sanitized_query = validate_search_input(streaming_request.search_query)
         
-        if not listing_number.strip():
+        # Validate listing number
+        listing_number = listing_number.strip()
+        if not listing_number or len(listing_number) > 50:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Listing number is required"
+                detail="Invalid listing number"
             )
         
         # Get property data
@@ -127,10 +155,10 @@ async def stream_property_explanation(
                 detail=f"Property {listing_number} not found"
             )
         
-        # Stream explanation
+        # Stream explanation with sanitized input
         return StreamingResponse(
             explanation_service.stream_explanation(
-                search_query=request.search_query,
+                search_query=sanitized_query,
                 listing_number=listing_number,
                 property_data=property_data
             ),
@@ -150,12 +178,17 @@ async def stream_property_explanation(
         logger.error(f"Error streaming explanation: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to stream explanation: {str(e)}"
+            detail="Failed to stream explanation"
         )
 
 @router.get("/cache/stats/")
-async def get_cache_statistics():
-    """Get detailed cache performance statistics"""
+@rate_limit_general
+async def get_cache_statistics(request: Request):
+    """
+    Get detailed cache performance statistics
+    
+    Security: General rate limiting (100 requests/minute per IP)
+    """
     return {
         "cache_statistics": explanation_cache.get_cache_stats(),
         "service_status": {
@@ -165,9 +198,22 @@ async def get_cache_statistics():
     }
 
 @router.delete("/cache/property/{listing_number}")
-async def clear_property_cache(listing_number: str):
-    """Clear all cached explanations for a specific property"""
+@rate_limit_strict
+async def clear_property_cache(request: Request, listing_number: str):
+    """
+    Clear all cached explanations for a specific property
+    
+    Security: Strict rate limiting (3 requests/minute per IP)
+    """
     try:
+        # Validate listing number
+        listing_number = listing_number.strip()
+        if not listing_number or len(listing_number) > 50:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid listing number"
+            )
+            
         deleted_count = await explanation_cache.invalidate_property_explanations(listing_number)
         
         return {
@@ -175,16 +221,23 @@ async def clear_property_cache(listing_number: str):
             "deleted_entries": deleted_count
         }
         
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error clearing property cache: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to clear cache: {str(e)}"
+            detail="Failed to clear cache"
         )
 
 @router.delete("/cache/all/")
-async def clear_all_explanation_cache():
-    """Clear all explanation cache entries (maintenance endpoint)"""
+@rate_limit_strict
+async def clear_all_explanation_cache(request: Request):
+    """
+    Clear all explanation cache entries (maintenance endpoint)
+    
+    Security: Strict rate limiting (3 requests/minute per IP)
+    """
     try:
         deleted_count = await explanation_cache.clear_all_explanations()
         
@@ -197,7 +250,7 @@ async def clear_all_explanation_cache():
         logger.error(f"Error clearing all cache: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to clear cache: {str(e)}"
+            detail="Failed to clear cache"
         )
 
 @router.get("/test-property/{listing_number}")

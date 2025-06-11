@@ -158,38 +158,38 @@ export function PropertyCard({ property, showScore = true, className, searchTerm
           )}
         </div>
 
-        <CardContent className="p-4 flex-1 flex flex-col">
-          <h3 className="font-semibold text-lg line-clamp-1 mb-1">{property.title}</h3>
+        <CardContent className="p-3 sm:p-4 flex-1 flex flex-col">
+          <h3 className="font-semibold text-base sm:text-lg line-clamp-1 mb-1">{property.title}</h3>
           
-          <div className="flex items-center text-sm text-muted-foreground mb-3">
-            <MapPin className="h-3.5 w-3.5 mr-1 flex-shrink-0" />
+          <div className="flex items-center text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-3">
+            <MapPin className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1 flex-shrink-0" />
             <span className="line-clamp-1">{property.location.neighborhood}, {property.location.city}</span>
           </div>
           
-          <p className="text-sm text-muted-foreground mb-3 line-clamp-2 flex-1">
+          <p className="text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-3 line-clamp-2 flex-1">
             {truncateText(property.description, 120)}
           </p>
           
-          <div className="mb-4 flex justify-between">
-            <div className="text-lg font-bold">
+          <div className="mb-3 sm:mb-4 flex justify-between">
+            <div className="text-base sm:text-lg font-bold">
               {formattedPrice}
-              {property.status === 'for_rent' && <span className="text-sm font-normal text-muted-foreground"> / month</span>}
+              {property.status === 'for_rent' && <span className="text-xs sm:text-sm font-normal text-muted-foreground"> / month</span>}
             </div>
           </div>
           
-          <div className="grid grid-cols-3 gap-2 text-sm mt-auto">
-            <div className="flex flex-col items-center bg-muted/40 rounded-md p-2 h-16 justify-center">
-              <BedDouble className="h-4 w-4 mb-1 flex-shrink-0" />
+          <div className="grid grid-cols-3 gap-1 sm:gap-2 text-sm mt-auto">
+            <div className="flex flex-col items-center bg-muted/40 rounded-md p-1.5 sm:p-2 h-14 sm:h-16 justify-center">
+              <BedDouble className="h-3.5 w-3.5 sm:h-4 sm:w-4 mb-1 flex-shrink-0" />
               <span className="text-center leading-tight text-xs">{property.bedrooms} {property.bedrooms === 1 ? 'Bed' : 'Beds'}</span>
             </div>
-            <div className="flex flex-col items-center bg-muted/40 rounded-md p-2 h-16 justify-center">
-              <Bath className="h-4 w-4 mb-1 flex-shrink-0" />
+            <div className="flex flex-col items-center bg-muted/40 rounded-md p-1.5 sm:p-2 h-14 sm:h-16 justify-center">
+              <Bath className="h-3.5 w-3.5 sm:h-4 sm:w-4 mb-1 flex-shrink-0" />
               <span className="text-center leading-tight text-xs">
                 {property.bathrooms % 1 === 0 ? property.bathrooms : property.bathrooms.toFixed(1)} {property.bathrooms === 1 ? 'Bath' : 'Baths'}
               </span>
             </div>
-            <div className="flex flex-col items-center bg-muted/40 rounded-md p-2 h-16 justify-center">
-              <Move className="h-4 w-4 mb-1 flex-shrink-0" />
+            <div className="flex flex-col items-center bg-muted/40 rounded-md p-1.5 sm:p-2 h-14 sm:h-16 justify-center">
+              <Move className="h-3.5 w-3.5 sm:h-4 sm:w-4 mb-1 flex-shrink-0" />
               <span className="text-center leading-tight text-xs">{property.area} {property.areaUnit}</span>
             </div>
           </div>

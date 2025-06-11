@@ -1,13 +1,23 @@
-from fastapi import APIRouter, Depends, HTTPException, Body, Query
+from fastapi import APIRouter, Depends, HTTPException, Body, Query, Request
 from sqlalchemy.orm import Session
 import logging
+import time
 
 from app.db.database import get_db
 from app.models.property import PropertySearchRequest, PropertySearchResponse, PropertyExplanationResponse
 from app.services.enhanced_search_service import EnhancedSearchService
 from app.services.search_service import SearchService  # Keep for fallback
+from app.core.security import (
+    rate_limit_search,
+    rate_limit_general,
+    rate_limit_strict,
+    validate_search_input,
+    security_middleware
+)
 
-logger = logging.getLogger(__name__)
+# Use search-specific logger
+search_logger = logging.getLogger('search')
+logger = logging.getLogger(__name__)  # Add general logger for error handling
 
 router = APIRouter()
 
@@ -16,7 +26,9 @@ enhanced_search_service = EnhancedSearchService()
 fallback_search_service = SearchService()
 
 @router.post("/", response_model=PropertySearchResponse)
+@rate_limit_search
 async def search_properties(
+    request: Request,
     search_request: PropertySearchRequest,
     db: Session = Depends(get_db),
     use_ai: bool = Query(True, description="Use AI-powered vector search (Phase 2)")
@@ -28,9 +40,16 @@ async def search_properties(
     - Vector search for semantic understanding
     - Multi-dimensional scoring
     - Enhanced location-based filtering
+    
+    Security: Rate limited to 5 requests/minute per IP
     """
+    start_time = time.time()
     try:
-        logger.info(f"Search request: '{search_request.query}' with AI={use_ai}")
+        # Validate and sanitize search input
+        sanitized_query = validate_search_input(search_request.query)
+        search_request.query = sanitized_query
+        
+        search_logger.info(f"🔍 SEARCH: '{search_request.query}' (AI={use_ai})")
         
         if use_ai:
             # Use Phase 2 enhanced search with vector similarity - create fresh instance
@@ -43,29 +62,36 @@ async def search_properties(
                 search_request=search_request
             )
         
-        logger.info(f"Search returned {results.totalResults} results")
+        # Log search performance and results
+        duration = time.time() - start_time
+        avg_score = sum(getattr(prop, 'searchScore', 0) for prop in results.properties) / len(results.properties) if results.properties else 0
+        search_logger.info(f"✅ RESULTS: {results.totalResults} properties found in {duration:.2f}s (avg score: {avg_score:.1f}%)")
+        
         return results
         
+    except HTTPException:
+        # Re-raise HTTP exceptions (like validation errors)
+        raise
     except Exception as e:
-        logger.error(f"Error searching properties: {e}")
-        import traceback
-        traceback.print_exc()
+        search_logger.error(f"❌ SEARCH ERROR: {e}")
         # If enhanced search fails, try fallback
         if use_ai:
             try:
-                logger.info("Enhanced search failed, trying fallback method")
+                search_logger.info("🔄 Trying fallback search method")
                 results = await fallback_search_service.search_properties(
                     db=db,
                     search_request=search_request
                 )
                 return results
             except Exception as fallback_error:
-                logger.error(f"Fallback search also failed: {fallback_error}")
+                search_logger.error(f"❌ FALLBACK ERROR: {fallback_error}")
         
         raise HTTPException(status_code=500, detail="Search service temporarily unavailable")
 
 @router.post("/simple")
+@rate_limit_search
 async def simple_search(
+    request: Request,
     query: str = Body(..., embed=True),
     limit: int = Body(20, embed=True),
     use_ai: bool = Body(True, embed=True),
@@ -73,12 +99,21 @@ async def simple_search(
 ):
     """
     Simple search endpoint for quick testing with AI capabilities
+    
+    Security: Rate limited to 10 requests/minute per IP
     """
     try:
+        # Validate and sanitize search input
+        sanitized_query = validate_search_input(query)
+        
+        # Limit result count to prevent resource abuse
+        if limit > 50:
+            limit = 50
+        
         from app.models.property import PropertySearchRequest
         
         search_request = PropertySearchRequest(
-            query=query,
+            query=sanitized_query,
             filters=None,
             page=1,
             page_size=limit
@@ -94,7 +129,7 @@ async def simple_search(
             )
         
         return {
-            "query": query,
+            "query": sanitized_query,
             "found": results.totalResults,
             "ai_powered": use_ai,
             "properties": [
@@ -113,20 +148,34 @@ async def simple_search(
             ]
         }
         
+    except HTTPException:
+        # Re-raise HTTP exceptions (like validation errors)
+        raise
     except Exception as e:
         logger.error(f"Error in simple search: {e}")
         raise HTTPException(status_code=500, detail="Search service temporarily unavailable")
 
 @router.get("/test-vector")
+@rate_limit_strict
 async def test_vector_search(
+    request: Request,
     query: str = Query("3 bedroom house near schools", description="Test query"),
     limit: int = Query(5, description="Number of results")
 ):
     """
     Test endpoint for vector search functionality
     Returns detailed scoring information for debugging
+    
+    Security: Strict rate limiting (3 requests/minute per IP)
     """
     try:
+        # Validate and sanitize search input
+        sanitized_query = validate_search_input(query)
+        
+        # Limit result count
+        if limit > 10:
+            limit = 10
+            
         from app.services.vector_service import VectorService
         
         vector_service = VectorService()
@@ -143,12 +192,12 @@ async def test_vector_search(
             }
         
         # Get vector search results
-        vector_results = await vector_service.search_similar_properties(query, top_k=limit)
+        vector_results = await vector_service.search_similar_properties(sanitized_query, top_k=limit)
         
         if not vector_results:
             return {
                 "status": "no_results",
-                "query": query,
+                "query": sanitized_query,
                 "message": "No properties found in vector database"
             }
         
@@ -172,11 +221,14 @@ async def test_vector_search(
         
         return {
             "status": "success",
-            "query": query,
+            "query": sanitized_query,
             "results": formatted_results,
             "index_stats": index_stats
         }
         
+    except HTTPException:
+        # Re-raise HTTP exceptions (like validation errors)
+        raise
     except Exception as e:
         logger.error(f"Error in vector search test: {e}")
         return {
@@ -185,9 +237,12 @@ async def test_vector_search(
         }
 
 @router.get("/health")
-async def search_health_check():
+@rate_limit_general
+async def search_health_check(request: Request):
     """
     Health check for search services
+    
+    Security: General rate limiting (100 requests/minute per IP)
     """
     try:
         # Check vector service

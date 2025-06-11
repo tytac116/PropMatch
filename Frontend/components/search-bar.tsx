@@ -113,20 +113,20 @@ export function SearchBar({ onSearch, className, suggestions = [], initialQuery 
   }
 
   return (
-    <div className={cn("w-full max-w-3xl mx-auto", className)}>
+    <div className={cn("w-full max-w-4xl mx-auto", className)}>
       <div className="flex flex-col items-center space-y-4 w-full">
-        <Tabs value={filter} className="w-full max-w-md" onValueChange={(value) => handleFilterChange(value as 'buy' | 'rent')}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="buy" className="text-lg">Buy</TabsTrigger>
-            <TabsTrigger value="rent" className="text-lg">Rent</TabsTrigger>
+        <Tabs value={filter} className="w-full max-w-sm" onValueChange={(value) => handleFilterChange(value as 'buy' | 'rent')}>
+          <TabsList className="grid w-full grid-cols-2 h-10 sm:h-11">
+            <TabsTrigger value="buy" className="text-base sm:text-lg">Buy</TabsTrigger>
+            <TabsTrigger value="rent" className="text-base sm:text-lg">Rent</TabsTrigger>
           </TabsList>
         </Tabs>
 
         <div ref={searchContainerRef} className="relative w-full">
-          <div className="flex w-full">
+          <div className="flex w-full gap-0">
             <div className="relative flex-grow">
               <Input
-                className="pr-10 h-12 text-lg rounded-l-lg focus-visible:ring-2 focus-visible:ring-primary"
+                className="pr-10 h-11 sm:h-12 text-base sm:text-lg rounded-l-lg rounded-r-none focus-visible:ring-2 focus-visible:ring-primary border-r-0"
                 placeholder="Describe your dream property..."
                 value={query}
                 onChange={handleInputChange}
@@ -146,10 +146,10 @@ export function SearchBar({ onSearch, className, suggestions = [], initialQuery 
             </div>
             <Button 
               onClick={handleSearch}
-              className="rounded-r-lg h-12"
+              className="rounded-r-lg rounded-l-none h-11 sm:h-12 px-4 sm:px-6 flex-shrink-0"
             >
-              <Search className="h-5 w-5 mr-2" />
-              <span>Search</span>
+              <Search className="h-4 w-4 sm:h-5 sm:w-5 sm:mr-2" />
+              <span className="hidden sm:inline">Search</span>
             </Button>
           </div>
 
@@ -161,14 +161,14 @@ export function SearchBar({ onSearch, className, suggestions = [], initialQuery 
               : "opacity-0 -translate-y-2 max-h-0 border-0"
           )}>
             <div className="overflow-auto max-h-60">
-              <div className="p-2 text-sm text-muted-foreground">
+              <div className="p-3 text-sm text-muted-foreground">
                 Try searching for:
               </div>
               <ul className="p-2 space-y-1">
                 {suggestions.map((suggestion, index) => (
                   <li key={index}>
                     <button
-                      className="w-full text-left p-2 hover:bg-muted rounded-md transition-colors text-sm duration-150"
+                      className="w-full text-left p-3 hover:bg-muted rounded-md transition-colors text-sm duration-150"
                       onClick={() => handleSuggestionClick(suggestion)}
                     >
                       {suggestion}

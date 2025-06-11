@@ -1,5 +1,5 @@
 import './globals.css'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Navbar } from '@/components/navbar'
@@ -17,6 +17,13 @@ export const metadata: Metadata = {
   }
 }
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+}
+
 export default function RootLayout({
   children,
 }: {
@@ -24,14 +31,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={`${inter.className} overflow-x-hidden`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
         >
           <Navbar />
-          <main className="min-h-screen pt-16">
+          <main className="min-h-screen pt-16 w-full">
             {children}
           </main>
           <Footer />

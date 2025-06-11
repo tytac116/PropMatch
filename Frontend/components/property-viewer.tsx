@@ -84,29 +84,10 @@ export function PropertyViewer({ property, searchTerm, onBack, enableStreaming =
       </Button>
       
       <Card className="overflow-hidden">
-        {/* Mobile Layout - AI Analysis First */}
+        {/* Mobile Layout - Images First, then AI Analysis */}
         <div className="lg:hidden">
           <div className="p-4 space-y-4">
-            {/* AI Explanation - Mobile First */}
-            {searchTerm && searchTerm.trim() && (
-              <MatchExplanation 
-                searchTerm={searchTerm} 
-                property={{
-                  ...property,
-                  listing_number: property.id
-                } as any} 
-                enableStreaming={enableStreaming}
-              />
-            )}
-            
-            {/* Match Score - Mobile */}
-            {searchTerm && searchTerm.trim() && (
-              <div className="bg-card border rounded-lg p-4">
-                <MatchScore property={property} size="lg" />
-              </div>
-            )}
-
-            {/* Image Carousel - Mobile */}
+            {/* Image Carousel - Mobile First */}
             <div className="relative w-full">
               <Carousel className="w-full" setApi={handleCarouselApi}>
                 <CarouselContent>
@@ -149,6 +130,25 @@ export function PropertyViewer({ property, searchTerm, onBack, enableStreaming =
                 </div>
               )}
             </div>
+
+            {/* AI Explanation - Mobile Second */}
+            {searchTerm && searchTerm.trim() && (
+              <MatchExplanation 
+                searchTerm={searchTerm} 
+                property={{
+                  ...property,
+                  listing_number: property.id
+                } as any} 
+                enableStreaming={enableStreaming}
+              />
+            )}
+            
+            {/* Match Score - Mobile */}
+            {searchTerm && searchTerm.trim() && (
+              <div className="bg-card border rounded-lg p-4">
+                <MatchScore property={property} size="lg" />
+              </div>
+            )}
 
             {/* Property Title & Price - Mobile */}
             <div className="bg-card border rounded-lg p-4">

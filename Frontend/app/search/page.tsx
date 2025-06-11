@@ -336,17 +336,22 @@ export default function SearchPage() {
   }, [])
   
   return (
-    <div className="container mx-auto px-4 md:px-6 py-8 md:py-12">
-      <div className="mb-8 max-w-6xl mx-auto">
-        <h1 className="text-2xl md:text-3xl font-bold mb-6 text-center">Find Your Perfect Cape Town Property</h1>
-        <SearchBar 
-          onSearch={handleSearch} 
-          className="mb-6"
-          suggestions={suggestionQueries}
-          initialQuery={initialQuery}
-          initialFilter={initialFilter}
-        />
+    <div className="min-h-screen bg-background">
+      {/* Search Header */}
+      <div className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40 border-b">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-6">
+          <SearchBar
+            onSearch={handleSearch}
+            suggestions={suggestionQueries}
+            initialQuery={initialQuery}
+            initialFilter={initialFilter}
+            className="w-full"
+          />
+        </div>
+      </div>
 
+      {/* Main Content */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         {/* Error display */}
         {error && (
           <Alert className="mb-6" variant="destructive">
@@ -359,9 +364,9 @@ export default function SearchPage() {
           <AnimatedSearchLoader searchQuery={currentSearchQuery} />
         ) : (
           searchResults.searchTerm || searchResults.properties.length > 0 ? (
-            <div className="flex gap-6">
+            <div className="flex flex-col lg:flex-row gap-6">
               {/* Desktop Filter Panel - Left Side */}
-              <div className="hidden lg:block flex-shrink-0">
+              <div className="hidden lg:block lg:w-80 flex-shrink-0">
                 <div className="sticky top-24 space-y-6">
                   <FilterPanel
                     properties={searchResults.properties}
@@ -373,108 +378,111 @@ export default function SearchPage() {
               {/* Main Content - Right Side */}
               <div className="flex-1 min-w-0">
                 <div className="space-y-6">
-                  <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                    <div className="flex flex-col gap-2">
-                      <h2 className="text-xl font-semibold">
-                        {filteredProperties.length > 0 
-                          ? `${filteredProperties.length} ${filteredProperties.length === 1 ? 'property' : 'properties'} found`
-                          : searchResults.searchTerm
-                            ? 'No properties found'
-                            : 'Start your search above'
-                        }
-                      </h2>
-                      {/* Remove technical search message, keep only user-friendly message if needed */}
-                      {searchResults.message && !searchResults.message.includes('Vector+BM25+AI') && (
-                        <p className="text-sm text-muted-foreground">{searchResults.message}</p>
-                      )}
-                      {activeFilters && (
-                        <div className="text-sm text-muted-foreground">
-                          {activeFilters.sortBy === 'match_score' && (
-                            <span className="inline-flex items-center gap-1">
-                              <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
-                              Sorted by AI Match Score
-                            </span>
-                          )}
-                          {activeFilters.sortBy === 'price_low' && (
-                            <span>Sorted by Price: Low to High</span>
-                          )}
-                          {activeFilters.sortBy === 'price_high' && (
-                            <span>Sorted by Price: High to Low</span>
-                          )}
-                          {activeFilters.sortBy === 'area_low' && (
-                            <span>Sorted by Area: Small to Large</span>
-                          )}
-                          {activeFilters.sortBy === 'area_high' && (
-                            <span>Sorted by Area: Large to Small</span>
-                          )}
-                          {activeFilters.sortBy === 'newest' && (
-                            <span>Sorted by Newest Listed</span>
-                          )}
-                          {activeFilters.sortBy === 'oldest' && (
-                            <span>Sorted by Oldest Listed</span>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                      {/* Mobile Filter Button */}
-                      <Sheet open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
-                        <SheetTrigger asChild>
-                          <Button variant="outline" size="sm" className="lg:hidden">
-                            <SlidersHorizontal className="h-4 w-4 mr-2" />
-                            Filters
-                            {activeFilters && (
-                              <span className="ml-1 bg-primary text-primary-foreground text-xs px-1.5 py-0.5 rounded-full">
-                                {[
-                                  activeFilters.priceRange[0] > 0 || activeFilters.priceRange[1] < Math.max(...searchResults.properties.map(p => p.price)),
-                                  activeFilters.propertyTypes.length > 0,
-                                  activeFilters.bedrooms !== 'Any',
-                                  activeFilters.bathrooms !== 'Any',
-                                  activeFilters.areaRange[0] > 0 || activeFilters.areaRange[1] < Math.max(...searchResults.properties.map(p => p.area)),
-                                  activeFilters.neighborhoods.length > 0,
-                                  activeFilters.features.length > 0
-                                ].filter(Boolean).length}
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                      <div className="flex flex-col gap-2 min-w-0 flex-1">
+                        <h2 className="text-xl lg:text-2xl font-semibold">
+                          {filteredProperties.length > 0 
+                            ? `${filteredProperties.length} ${filteredProperties.length === 1 ? 'property' : 'properties'} found`
+                            : searchResults.searchTerm
+                              ? 'No properties found'
+                              : 'Start your search above'
+                          }
+                        </h2>
+                        {/* Remove technical search message, keep only user-friendly message if needed */}
+                        {searchResults.message && !searchResults.message.includes('Vector+BM25+AI') && (
+                          <p className="text-sm text-muted-foreground">{searchResults.message}</p>
+                        )}
+                        {activeFilters && (
+                          <div className="text-sm text-muted-foreground">
+                            {activeFilters.sortBy === 'match_score' && (
+                              <span className="inline-flex items-center gap-1">
+                                <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                                Sorted by AI Match Score
                               </span>
                             )}
-                          </Button>
-                        </SheetTrigger>
-                        <SheetContent side="left" className="w-80 p-0">
-                          <SheetHeader className="p-6 pb-0">
-                            <SheetTitle>Filters & Sort</SheetTitle>
-                          </SheetHeader>
-                          <div className="p-6 pt-0">
-                            <FilterPanel
-                              properties={searchResults.properties}
-                              onFilterChange={handleFilterChange}
-                              className="w-full border-0 shadow-none"
-                            />
+                            {activeFilters.sortBy === 'price_low' && (
+                              <span>Sorted by Price: Low to High</span>
+                            )}
+                            {activeFilters.sortBy === 'price_high' && (
+                              <span>Sorted by Price: High to Low</span>
+                            )}
+                            {activeFilters.sortBy === 'area_low' && (
+                              <span>Sorted by Area: Small to Large</span>
+                            )}
+                            {activeFilters.sortBy === 'area_high' && (
+                              <span>Sorted by Area: Large to Small</span>
+                            )}
+                            {activeFilters.sortBy === 'newest' && (
+                              <span>Sorted by Newest Listed</span>
+                            )}
+                            {activeFilters.sortBy === 'oldest' && (
+                              <span>Sorted by Oldest Listed</span>
+                            )}
                           </div>
-                        </SheetContent>
-                      </Sheet>
+                        )}
+                      </div>
                       
-                      {/* Enhanced Search Query Display */}
-                      {searchResults.searchTerm && searchResults.searchTerm.trim() && (
-                        <div 
-                          className="bg-gradient-to-r from-muted/50 to-muted/30 dark:from-muted/20 dark:to-muted/10 border border-border rounded-lg px-4 py-2 max-w-md hover:from-muted/70 hover:to-muted/50 dark:hover:from-muted/30 dark:hover:to-muted/20 transition-all duration-200 cursor-help"
-                          title={searchResults.searchTerm}
-                        >
-                          <div className="flex items-center gap-2">
-                            <div className="flex-shrink-0">
-                              <svg className="h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                              </svg>
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 flex-shrink-0">
+                        {/* Mobile Filter Button */}
+                        <Sheet open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
+                          <SheetTrigger asChild>
+                            <Button variant="outline" size="sm" className="lg:hidden w-full sm:w-auto">
+                              <SlidersHorizontal className="h-4 w-4 mr-2" />
+                              Filters
+                              {activeFilters && (
+                                <span className="ml-1 bg-primary text-primary-foreground text-xs px-1.5 py-0.5 rounded-full">
+                                  {[
+                                    activeFilters.priceRange[0] > 0 || activeFilters.priceRange[1] < Math.max(...searchResults.properties.map(p => p.price)),
+                                    activeFilters.propertyTypes.length > 0,
+                                    activeFilters.bedrooms !== 'Any',
+                                    activeFilters.bathrooms !== 'Any',
+                                    activeFilters.areaRange[0] > 0 || activeFilters.areaRange[1] < Math.max(...searchResults.properties.map(p => p.area)),
+                                    activeFilters.neighborhoods.length > 0,
+                                    activeFilters.features.length > 0
+                                  ].filter(Boolean).length}
+                                </span>
+                              )}
+                            </Button>
+                          </SheetTrigger>
+                          <SheetContent side="left" className="w-[90vw] sm:w-80 p-0">
+                            <SheetHeader className="p-4 sm:p-6 pb-0">
+                              <SheetTitle>Filters & Sort</SheetTitle>
+                            </SheetHeader>
+                            <div className="p-4 sm:p-6 pt-0">
+                              <FilterPanel
+                                properties={searchResults.properties}
+                                onFilterChange={handleFilterChange}
+                                className="w-full border-0 shadow-none"
+                              />
                             </div>
-                            <div className="min-w-0 flex-1">
-                              <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
-                                Search Query
-                              </p>
-                              <p className="text-sm font-medium text-foreground truncate">
-                                "{searchResults.searchTerm}"
-                              </p>
+                          </SheetContent>
+                        </Sheet>
+                        
+                        {/* Enhanced Search Query Display */}
+                        {searchResults.searchTerm && searchResults.searchTerm.trim() && (
+                          <div 
+                            className="bg-gradient-to-r from-muted/50 to-muted/30 dark:from-muted/20 dark:to-muted/10 border border-border rounded-lg px-3 py-2 w-full sm:max-w-xs hover:from-muted/70 hover:to-muted/50 dark:hover:from-muted/30 dark:hover:to-muted/20 transition-all duration-200"
+                            title={`Search query: ${searchResults.searchTerm}`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <div className="flex-shrink-0">
+                                <svg className="h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
+                                  Search Query
+                                </p>
+                                <p className="text-sm font-medium text-foreground truncate">
+                                  "{searchResults.searchTerm}"
+                                </p>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                   </div>
                   
@@ -485,7 +493,7 @@ export default function SearchPage() {
                     />
                   ) : searchResults.properties.length > 0 ? (
                     <div className="py-12 text-center">
-                      <div className="max-w-md mx-auto space-y-4">
+                      <div className="max-w-md mx-auto space-y-4 px-4">
                         <div className="text-6xl">🔍</div>
                         <h3 className="text-lg font-semibold">No matches found</h3>
                         <p className="text-muted-foreground">
@@ -495,7 +503,7 @@ export default function SearchPage() {
                     </div>
                   ) : searchResults.searchTerm ? (
                     <div className="py-12 text-center">
-                      <div className="max-w-md mx-auto space-y-4">
+                      <div className="max-w-md mx-auto space-y-4 px-4">
                         {initialFilter === 'rent' ? (
                           <>
                             <div className="text-6xl">🏠</div>
@@ -519,7 +527,7 @@ export default function SearchPage() {
                     </div>
                   ) : (
                     <div className="py-12 text-center">
-                      <div className="max-w-md mx-auto space-y-4">
+                      <div className="max-w-md mx-auto space-y-4 px-4">
                         <div className="text-6xl">🏠</div>
                         <h3 className="text-lg font-semibold">Start your property search</h3>
                         <p className="text-muted-foreground">
@@ -533,7 +541,7 @@ export default function SearchPage() {
             </div>
           ) : (
             <div className="py-12 text-center">
-              <div className="max-w-md mx-auto space-y-4">
+              <div className="max-w-md mx-auto space-y-4 px-4">
                 <div className="text-6xl">🏠</div>
                 <h3 className="text-lg font-semibold">Start your property search</h3>
                 <p className="text-muted-foreground">

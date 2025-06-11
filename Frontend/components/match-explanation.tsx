@@ -218,14 +218,18 @@ export function MatchExplanation({
     <Card className={cn("overflow-hidden", className)}>
       <CardContent className="p-6 space-y-4">
         <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold flex items-center gap-2">
-          <span>AI Match Analysis</span>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+          <h3 className="text-lg sm:text-xl font-semibold text-foreground">
+            AI Match Analysis
+          </h3>
           {searchTerm && (
-            <span className="text-sm font-normal text-muted-foreground bg-muted px-2 py-1 rounded-md">
-              "{searchTerm}"
-            </span>
+            <div className="inline-flex items-center">
+              <span className="text-xs sm:text-sm font-medium text-muted-foreground bg-muted px-2 py-1 rounded-md border">
+                "{searchTerm}"
+              </span>
+            </div>
           )}
-        </h3>
+        </div>
         
           <div className="flex items-center gap-2">
             {loadTime && (
