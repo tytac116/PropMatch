@@ -1,0 +1,823 @@
+{
+	"info": {
+		"_postman_id": "ai-search-collection-2025",
+		"name": "PropMatch AI Search Service",
+		"description": "Comprehensive test collection for the AI-enhanced property search service using GPT-4o-mini for intelligent re-ranking",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "🏠 AI Search Endpoints",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/health/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "health", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AI Search - Basic Query",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"2 bedroom apartment close to shopping mall\",\n  \"limit\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AI Debug - View Reasoning",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"2 bedroom apartment close to shopping mall\",\n  \"limit\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-debug/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-debug", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AI Scores Debug",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"luxury apartment with ocean view\",\n  \"limit\": 2\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-scores-debug/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-scores-debug", ""]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🎯 Semantic Understanding Tests",
+			"item": [
+				{
+					"name": "Walking Distance to UCT",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"apartment walking distance to UCT\",\n  \"limit\": 4\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sea Point Beach Access",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"2 bedroom apartment Sea Point walking distance beach\",\n  \"limit\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Shopping Mall Proximity",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"apartment near Cavendish Square shopping center\",\n  \"limit\": 4\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "V&A Waterfront Access",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"apartment close to V&A Waterfront and shopping\",\n  \"limit\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "👨‍🎓 Lifestyle & Demographics",
+			"item": [
+				{
+					"name": "Young Professional Starter Home",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"cheap 1 bedroom apartment for young professional\",\n  \"limit\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Student Accommodation UCT",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"student accommodation near UCT medical school\",\n  \"limit\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Family Home with Schools",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"family home 3 bedroom near good schools\",\n  \"limit\": 4\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pet-Friendly with Garden",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"pet friendly apartment with garden\",\n  \"limit\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "💰 Price & Investment Queries",
+			"item": [
+				{
+					"name": "Luxury Camps Bay Property",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"luxury 3 bedroom house with pool in Camps Bay\",\n  \"limit\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Investment Property High Yield",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"investment property high rental yield\",\n  \"limit\": 4\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Budget-Friendly Options",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"affordable 2 bedroom apartment under R2 million\",\n  \"limit\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Airbnb Investment Opportunity",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"Airbnb friendly apartment near tourist attractions\",\n  \"limit\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🏖️ Specific Locations & Features",
+			"item": [
+				{
+					"name": "City Bowl Mountain Views",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"apartment City Bowl with Table Mountain view\",\n  \"limit\": 4\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atlantic Seaboard Ocean View",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"apartment Atlantic Seaboard with ocean view and parking\",\n  \"limit\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Southern Suburbs Family Area",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"family house Southern Suburbs near train station\",\n  \"limit\": 4\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Observatory Hip Area",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"trendy apartment Observatory near restaurants and cafes\",\n  \"limit\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🚗 Transport & Accessibility",
+			"item": [
+				{
+					"name": "MyCiti Bus Route Access",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"apartment near MyCiti bus route and parking\",\n  \"limit\": 4\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Airport Access for Business",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"apartment close to airport for business travel\",\n  \"limit\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CBD Walking Distance",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"apartment walking distance to Cape Town CBD\",\n  \"limit\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🔍 Advanced Features & Amenities",
+			"item": [
+				{
+					"name": "Modern Amenities Package",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"apartment with pool gym security and fiber internet\",\n  \"limit\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Luxury Features Search",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"luxury apartment with concierge service and rooftop pool\",\n  \"limit\": 2\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Security & Safety Priority",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"secure apartment complex with 24 hour security and access control\",\n  \"limit\": 4\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eco-Friendly Features",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"apartment with solar panels and water saving features\",\n  \"limit\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🧪 Edge Cases & Impossible Queries",
+			"item": [
+				{
+					"name": "Impossible: Underwater Castle",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"underwater castle with 15 bedrooms and swimming pool\",\n  \"limit\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Impossible: Flying House",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"flying house with cloud access and rainbow parking\",\n  \"limit\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Impossible: Wrong Country",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"apartment in Paris France near Eiffel Tower\",\n  \"limit\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Very Specific Unrealistic",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"50 bedroom mansion with private airport and gold plated walls\",\n  \"limit\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "⚡ Performance & Load Tests",
+			"item": [
+				{
+					"name": "Large Result Set",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"apartment Cape Town\",\n  \"limit\": 20\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Word Query",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"apartment\",\n  \"limit\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Very Long Complex Query",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"modern 2 bedroom apartment with ocean view balcony parking garage security pool gym fiber internet pet friendly airbnb allowed near UCT V&A Waterfront shopping restaurants walking distance beach MyCiti bus route\",\n  \"limit\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Empty Query Test",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"\",\n  \"limit\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/test/ai-search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "test", "ai-search", ""]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+} 

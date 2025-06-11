@@ -1,0 +1,392 @@
+{
+  "info": {
+    "name": "PropMatch AI Explanation Service v1.0",
+    "description": "Phase 3: AI-powered property explanations with Redis caching and streaming",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Service Health & Status",
+      "item": [
+        {
+          "name": "Explanation Service Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/explanations/health/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "explanations", "health", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cache Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/explanations/cache/stats/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "explanations", "cache", "stats", ""]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Property Data Testing",
+      "item": [
+        {
+          "name": "Test Property Retrieval - Sea Point",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/explanations/test-property/115886546",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "explanations", "test-property", "115886546"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Test Property Retrieval - Clifton Villa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/explanations/test-property/116208482",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "explanations", "test-property", "116208482"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. AI Explanation Generation",
+      "item": [
+        {
+          "name": "Generate Explanation - Modern Apartment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"search_query\": \"Modern 2-bedroom apartment in Sea Point with ocean views\",\n  \"listing_number\": \"115886546\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/explanations/generate/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "explanations", "generate", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Explanation - Family Home",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"search_query\": \"Family home with garden in Sea Point\",\n  \"listing_number\": \"115886546\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/explanations/generate/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "explanations", "generate", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Explanation - Luxury Villa",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"search_query\": \"Luxury waterfront villa with pool and security\",\n  \"listing_number\": \"116208482\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/explanations/generate/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "explanations", "generate", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Explanation - Budget Property",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"search_query\": \"Affordable studio apartment near transport\",\n  \"listing_number\": \"115886546\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/explanations/generate/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "explanations", "generate", ""]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. Streaming Explanations",
+      "item": [
+        {
+          "name": "Stream Explanation - Modern Apartment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "text/event-stream"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"search_query\": \"Modern apartment with balcony and city views\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/explanations/stream/115886546",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "explanations", "stream", "115886546"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Stream Explanation - Investment Property",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "text/event-stream"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"search_query\": \"Investment property with rental potential\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/explanations/stream/116208482",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "explanations", "stream", "116208482"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "5. Cache Testing & Management",
+      "item": [
+        {
+          "name": "Repeat Query - Test Caching",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"search_query\": \"Modern 2-bedroom apartment in Sea Point with ocean views\",\n  \"listing_number\": \"115886546\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/explanations/generate/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "explanations", "generate", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Clear Property Cache",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/explanations/cache/property/115886546",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "explanations", "cache", "property", "115886546"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Clear All Cache (Maintenance)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/explanations/cache/all/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "explanations", "cache", "all", ""]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "6. Edge Cases & Error Testing",
+      "item": [
+        {
+          "name": "Invalid Property ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"search_query\": \"Any property\",\n  \"listing_number\": \"999999999\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/explanations/generate/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "explanations", "generate", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Empty Search Query",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"search_query\": \"\",\n  \"listing_number\": \"115886546\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/explanations/generate/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "explanations", "generate", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Complex Search Query",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"search_query\": \"3-bedroom house in Sea Point under R3M with pool, garden, security, garage, modern kitchen, sea views, close to schools and shopping malls, pet-friendly with fibre internet\",\n  \"listing_number\": \"115886546\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/explanations/generate/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "explanations", "generate", ""]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "7. Performance & Monitoring",
+      "item": [
+        {
+          "name": "Multiple Rapid Requests",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"search_query\": \"Performance test query {{$randomInt}}\",\n  \"listing_number\": \"115886546\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/explanations/generate/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "explanations", "generate", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cache Performance Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/explanations/cache/stats/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "explanations", "cache", "stats", ""]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    }
+  ]
+} 

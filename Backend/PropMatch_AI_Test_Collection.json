@@ -1,0 +1,276 @@
+{
+	"info": {
+		"name": "PropMatch AI Re-ranking Test",
+		"description": "Test collection for AI-powered property search re-ranking using GPT-3.5-turbo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000"
+		}
+	],
+	"item": [
+		{
+			"name": "Health Check - AI Service",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/test/health/",
+					"host": ["{{base_url}}"],
+					"path": ["api", "v1", "test", "health", ""]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status is healthy', () => {",
+							"    pm.response.to.have.status(200);",
+							"    const response = pm.response.json();",
+							"    pm.expect(response.status).to.equal('healthy');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		},
+		{
+			"name": "AI Search - UCT Proximity Test",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"query\": \"2 bedroom apartment close to UCT\",\n    \"limit\": 5\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/test/ai-search/",
+					"host": ["{{base_url}}"],
+					"path": ["api", "v1", "test", "ai-search", ""]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('AI search returns results', () => {",
+							"    pm.response.to.have.status(200);",
+							"    const response = pm.response.json();",
+							"    pm.expect(response.ai_enhanced).to.be.true;",
+							"    pm.expect(response.properties).to.be.an('array');",
+							"    pm.expect(response.timing).to.have.property('vector_search_ms');",
+							"    pm.expect(response.timing).to.have.property('ai_rerank_ms');",
+							"    pm.expect(response.timing).to.have.property('total_ms');",
+							"});",
+							"",
+							"pm.test('Properties have search scores', () => {",
+							"    const response = pm.response.json();",
+							"    if (response.properties.length > 0) {",
+							"        pm.expect(response.properties[0]).to.have.property('searchScore');",
+							"    }",
+							"});",
+							"",
+							"// Log timing for performance analysis",
+							"const timing = pm.response.json().timing;",
+							"console.log(`Performance: Vector=${timing.vector_search_ms}ms, AI=${timing.ai_rerank_ms}ms, Total=${timing.total_ms}ms`);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		},
+		{
+			"name": "AI Search - Price Constraint Test",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"query\": \"house under 3 million rand\",\n    \"limit\": 5\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/test/ai-search/",
+					"host": ["{{base_url}}"],
+					"path": ["api", "v1", "test", "ai-search", ""]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Price constraint handled correctly', () => {",
+							"    pm.response.to.have.status(200);",
+							"    const response = pm.response.json();",
+							"    ",
+							"    // Check if properties under 3M get higher scores than those over",
+							"    if (response.properties.length > 1) {",
+							"        const underBudget = response.properties.filter(p => p.price < 3000000);",
+							"        const overBudget = response.properties.filter(p => p.price >= 3000000);",
+							"        ",
+							"        if (underBudget.length > 0 && overBudget.length > 0) {",
+							"            const avgUnderScore = underBudget.reduce((sum, p) => sum + p.searchScore, 0) / underBudget.length;",
+							"            const avgOverScore = overBudget.reduce((sum, p) => sum + p.searchScore, 0) / overBudget.length;",
+							"            console.log(`Under 3M avg score: ${avgUnderScore}, Over 3M avg score: ${avgOverScore}`);",
+							"        }",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		},
+		{
+			"name": "AI Search - Impossible Query Test",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"query\": \"4 bedroom house near johannesburg\",\n    \"limit\": 5\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/test/ai-search/",
+					"host": ["{{base_url}}"],
+					"path": ["api", "v1", "test", "ai-search", ""]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Impossible query gets low scores', () => {",
+							"    pm.response.to.have.status(200);",
+							"    const response = pm.response.json();",
+							"    ",
+							"    // Properties should get low scores for impossible location",
+							"    if (response.properties.length > 0) {",
+							"        const maxScore = Math.max(...response.properties.map(p => p.searchScore));",
+							"        console.log(`Highest score for Johannesburg query: ${maxScore}%`);",
+							"        // AI should recognize this is impossible in Cape Town dataset",
+							"        pm.expect(maxScore).to.be.below(50, 'Should get low scores for impossible location');",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		},
+		{
+			"name": "AI Search vs Regular Search Comparison",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"query\": \"underwater castle with 15 bedrooms\",\n    \"limit\": 3\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/test/ai-search/",
+					"host": ["{{base_url}}"],
+					"path": ["api", "v1", "test", "ai-search", ""]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Absurd query handled intelligently', () => {",
+							"    pm.response.to.have.status(200);",
+							"    const response = pm.response.json();",
+							"    ",
+							"    // This query should get very low scores with AI reasoning",
+							"    if (response.properties.length > 0) {",
+							"        const maxScore = Math.max(...response.properties.map(p => p.searchScore));",
+							"        console.log(`Highest score for 'underwater castle': ${maxScore}%`);",
+							"        ",
+							"        // AI should recognize this is completely unrealistic",
+							"        pm.expect(maxScore).to.be.below(30, 'Underwater castle should get very low AI scores');",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		},
+		{
+			"name": "Performance Benchmark - Regular Query",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"query\": \"3 bedroom house with garden\",\n    \"limit\": 8\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/test/ai-search/",
+					"host": ["{{base_url}}"],
+					"path": ["api", "v1", "test", "ai-search", ""]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Performance within acceptable range', () => {",
+							"    pm.response.to.have.status(200);",
+							"    const response = pm.response.json();",
+							"    const timing = response.timing;",
+							"    ",
+							"    console.log(`Performance Breakdown:`);",
+							"    console.log(`- Vector Search: ${timing.vector_search_ms}ms`);",
+							"    console.log(`- AI Re-ranking: ${timing.ai_rerank_ms}ms`);",
+							"    console.log(`- Total Time: ${timing.total_ms}ms`);",
+							"    ",
+							"    // Reasonable performance expectations",
+							"    pm.expect(timing.total_ms).to.be.below(10000, 'Total time should be under 10 seconds');",
+							"    pm.expect(timing.ai_rerank_ms).to.be.below(5000, 'AI re-ranking should be under 5 seconds');",
+							"    ",
+							"    // Calculate AI overhead",
+							"    const aiOverhead = (timing.ai_rerank_ms / timing.total_ms * 100).toFixed(1);",
+							"    console.log(`AI Overhead: ${aiOverhead}% of total time`);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		}
+	]
+} 

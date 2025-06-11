@@ -6,6 +6,7 @@ import os
 from dotenv import load_dotenv
 
 from app.api.routes import properties, search
+from app.api.v1 import test_endpoints, hybrid_test_endpoints, explanation_endpoints
 from app.core.config import settings
 
 # Load environment variables
@@ -42,6 +43,13 @@ app.add_middleware(
 # Include API routes
 app.include_router(properties.router, prefix="/api/v1/properties", tags=["properties"])
 app.include_router(search.router, prefix="/api/v1/search", tags=["search"])
+
+# Include test endpoints
+app.include_router(test_endpoints.router, tags=["test"])
+app.include_router(hybrid_test_endpoints.router, tags=["hybrid_test"])
+
+# Include explanation endpoints - Phase 3: AI Explanation Generation
+app.include_router(explanation_endpoints.router, tags=["explanations"])
 
 # Health check endpoint
 @app.get("/")

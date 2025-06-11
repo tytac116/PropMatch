@@ -186,6 +186,56 @@ class SupabasePropertyService:
             logger.error(f"Error in batch fetch for {len(listing_numbers)} properties: {e}")
             return []
     
+    async def get_properties_sample(self, sample_size: int = 1000) -> List[Property]:
+        """Get a random sample of properties for BM25 corpus building"""
+        
+        if not self.supabase:
+            logger.error("Supabase client not available")
+            return []
+        
+        try:
+            # Get a random sample using PostgreSQL random function
+            # Note: Use 'random' without parentheses for Supabase/PostgREST
+            result = self.supabase.table('properties').select("*").order('random').limit(sample_size).execute()
+            
+            if not result.data:
+                logger.warning("No properties found for sample")
+                return []
+            
+            # Convert to Pydantic models
+            properties = []
+            for db_prop in result.data:
+                try:
+                    prop = self._convert_supabase_to_pydantic(db_prop)
+                    properties.append(prop)
+                except Exception as e:
+                    listing_num = db_prop.get('listing_number', 'unknown')
+                    logger.warning(f"Error converting property {listing_num} in sample: {e}")
+                    continue
+            
+            logger.info(f"Retrieved {len(properties)} properties for BM25 corpus sample")
+            return properties
+            
+        except Exception as e:
+            logger.error(f"Error fetching property sample: {e}")
+            # Fallback to first N properties if random sampling fails
+            try:
+                result = self.supabase.table('properties').select("*").limit(sample_size).execute()
+                if result.data:
+                    properties = []
+                    for db_prop in result.data:
+                        try:
+                            prop = self._convert_supabase_to_pydantic(db_prop)
+                            properties.append(prop)
+                        except Exception:
+                            continue
+                    logger.info(f"Retrieved {len(properties)} properties using fallback method")
+                    return properties
+            except Exception as e2:
+                logger.error(f"Fallback sample method also failed: {e2}")
+            
+            return []
+    
     async def get_property_statistics(self) -> Dict[str, Any]:
         """Get summary statistics about properties"""
         

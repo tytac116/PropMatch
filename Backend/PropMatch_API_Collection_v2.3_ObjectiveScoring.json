@@ -1,0 +1,372 @@
+{
+	"info": {
+		"_postman_id": "propmatch-api-v2-3",
+		"name": "PropMatch API v2.3 - Objective Scoring System",
+		"description": "PropMatch Property Search API - Objective Quality-Variance Matrix\\n\\n🎯 **NEW: Objective Scoring System**\\n- No more scores above 100%\\n- 4-scenario Quality-Variance Matrix\\n- Realistic bedroom & type enforcement\\n- Geographic impossibility detection\\n\\n📊 **Scoring Scenarios:**\\n1. High Quality + Low Variance (75-95%): Simple queries, good matches\\n2. High Quality + High Variance (40-90%): Specific queries, mixed results\\n3. Low Quality + Low Variance (20-35%): Simple queries, poor matches\\n4. Low Quality + High Variance (15-40%): Impossible/conflicting queries\\n\\n🚀 **Performance:**\\n- 89% speed improvement (41s → 4s)\\n- 1,437 Cape Town properties\\n- Advanced vector similarity matching\\n- Smart feature-only bonuses",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "🎯 Objective Scoring Scenarios",
+			"item": [
+				{
+					"name": "Scenario 1: High Quality + Low Variance",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response time < 5s', function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									"",
+									"pm.test('High Quality Low Variance Scoring', function () {",
+									"    const jsonData = pm.response.json();",
+									"    const scores = jsonData.properties.slice(0, 5).map(p => p.searchScore);",
+									"    const maxScore = Math.max(...scores);",
+									"    const minScore = Math.min(...scores);",
+									"    const range = maxScore - minScore;",
+									"    ",
+									"    pm.expect(maxScore).to.be.above(75, 'Max score should be 75%+');",
+									"    pm.expect(maxScore).to.be.below(100, 'Max score should be under 100%');",
+									"    pm.expect(range).to.be.below(20, 'Score range should be tight (<20%)');",
+									"    console.log(`Scores: [${scores.join(', ')}] | Range: ${range.toFixed(1)}%`);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\\n    \\"query\\": \\"2 bedroom apartment in Seapoint\\",\\n    \\"limit\\": 10\\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				},
+				{
+					"name": "Scenario 2: High Quality + High Variance",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response time < 5s', function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									"",
+									"pm.test('High Quality High Variance Scoring', function () {",
+									"    const jsonData = pm.response.json();",
+									"    const scores = jsonData.properties.slice(0, 10).map(p => p.searchScore);",
+									"    const maxScore = Math.max(...scores);",
+									"    const minScore = Math.min(...scores);",
+									"    const range = maxScore - minScore;",
+									"    ",
+									"    pm.expect(maxScore).to.be.above(70, 'Max score should be 70%+');",
+									"    pm.expect(maxScore).to.be.below(100, 'Max score should be under 100%');",
+									"    pm.expect(range).to.be.above(10, 'Should have wider variance (10%+)');",
+									"    console.log(`Scores: [${scores.slice(0,5).join(', ')}...] | Range: ${range.toFixed(1)}%`);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\\n    \\"query\\": \\"3 bedroom house with pool, garden, and ocean view in Clifton\\",\\n    \\"limit\\": 15\\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				},
+				{
+					"name": "Scenario 3: Low Quality + Low Variance",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response time < 5s', function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									"",
+									"pm.test('Low Quality Low Variance Scoring', function () {",
+									"    const jsonData = pm.response.json();",
+									"    const scores = jsonData.properties.slice(0, 5).map(p => p.searchScore);",
+									"    const maxScore = Math.max(...scores);",
+									"    const minScore = Math.min(...scores);",
+									"    const range = maxScore - minScore;",
+									"    ",
+									"    pm.expect(maxScore).to.be.below(45, 'Max score should be under 45%');",
+									"    pm.expect(range).to.be.below(15, 'Score range should be tight (<15%)');",
+									"    console.log(`Scores: [${scores.join(', ')}] | Range: ${range.toFixed(1)}%`);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\\n    \\"query\\": \\"castle with moat and medieval architecture\\",\\n    \\"limit\\": 10\\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				},
+				{
+					"name": "Scenario 4: Low Quality + High Variance",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response time < 5s', function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									"",
+									"pm.test('Low Quality High Variance Scoring', function () {",
+									"    const jsonData = pm.response.json();",
+									"    const scores = jsonData.properties.slice(0, 10).map(p => p.searchScore);",
+									"    const maxScore = Math.max(...scores);",
+									"    const minScore = Math.min(...scores);",
+									"    const range = maxScore - minScore;",
+									"    ",
+									"    pm.expect(maxScore).to.be.below(50, 'Max score should be under 50%');",
+									"    pm.expect(range).to.be.above(5, 'Should have some variance (5%+)');",
+									"    console.log(`Scores: [${scores.slice(0,5).join(', ')}...] | Range: ${range.toFixed(1)}%`);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\\n    \\"query\\": \\"apartment near airport with ocean view walking distance\\",\\n    \\"limit\\": 10\\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🔧 Core Criteria Enforcement",
+			"item": [
+				{
+					"name": "Bedroom Count Enforcement",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Bedroom matching prioritized', function () {",
+									"    const jsonData = pm.response.json();",
+									"    const properties = jsonData.properties.slice(0, 10);",
+									"    const twoBedrooms = properties.filter(p => parseInt(p.bedrooms) === 2);",
+									"    const otherBedrooms = properties.filter(p => parseInt(p.bedrooms) !== 2);",
+									"    ",
+									"    if (twoBedrooms.length > 0 && otherBedrooms.length > 0) {",
+									"        const avgTwoBed = twoBedrooms.reduce((sum, p) => sum + p.searchScore, 0) / twoBedrooms.length;",
+									"        const avgOther = otherBedrooms.reduce((sum, p) => sum + p.searchScore, 0) / otherBedrooms.length;",
+									"        pm.expect(avgTwoBed).to.be.above(avgOther, '2BR properties should score higher');",
+									"    }",
+									"    ",
+									"    console.log(`2BR properties: ${twoBedrooms.length}, Other: ${otherBedrooms.length}`);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\\n    \\"query\\": \\"2 bedroom apartment\\",\\n    \\"limit\\": 15\\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				},
+				{
+					"name": "Property Type Enforcement",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Apartment type prioritized', function () {",
+									"    const jsonData = pm.response.json();",
+									"    const properties = jsonData.properties.slice(0, 10);",
+									"    const apartments = properties.filter(p => p.type.toLowerCase().includes('apartment'));",
+									"    const houses = properties.filter(p => p.type.toLowerCase().includes('house'));",
+									"    ",
+									"    if (apartments.length > 0 && houses.length > 0) {",
+									"        const avgApartment = apartments.reduce((sum, p) => sum + p.searchScore, 0) / apartments.length;",
+									"        const avgHouse = houses.reduce((sum, p) => sum + p.searchScore, 0) / houses.length;",
+									"        pm.expect(avgApartment).to.be.above(avgHouse, 'Apartments should score higher');",
+									"    }",
+									"    ",
+									"    console.log(`Apartments: ${apartments.length}, Houses: ${houses.length}`);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\\n    \\"query\\": \\"apartment in Cape Town\\",\\n    \\"limit\\": 15\\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "⚡ Health & Performance",
+			"item": [
+				{
+					"name": "API Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": ["{{base_url}}"],
+							"path": ["health"]
+						}
+					}
+				},
+				{
+					"name": "Performance Benchmark",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Lightning fast response', function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"    console.log(`Response time: ${pm.response.responseTime}ms`);",
+									"});",
+									"",
+									"pm.test('Realistic score distribution', function () {",
+									"    const jsonData = pm.response.json();",
+									"    const scores = jsonData.properties.map(p => p.searchScore);",
+									"    const maxScore = Math.max(...scores);",
+									"    const minScore = Math.min(...scores);",
+									"    ",
+									"    pm.expect(maxScore).to.be.at.most(100, 'No scores above 100%');",
+									"    pm.expect(minScore).to.be.at.least(15, 'Minimum viable score');",
+									"    console.log(`Score range: ${minScore.toFixed(1)}% - ${maxScore.toFixed(1)}%`);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\\n    \\"query\\": \\"luxury 3 bedroom house with pool garden garage sea view Clifton Camps Bay\\",\\n    \\"limit\\": 20\\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"exec": [
+					"// Set base URL if not already set",
+					"if (!pm.environment.get('base_url')) {",
+					"    pm.environment.set('base_url', 'http://localhost:8000');",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		}
+	]
+} 

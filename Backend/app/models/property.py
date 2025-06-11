@@ -83,6 +83,7 @@ class Property(BaseModel):
     points_of_interest: Optional[List[PointOfInterest]] = None
     
     class Config:
+        extra = "allow"  # Allow dynamic attributes for scoring components
         json_encoders = {
             datetime: lambda v: v.isoformat()
         }

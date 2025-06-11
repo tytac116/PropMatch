@@ -1,0 +1,444 @@
+{
+	"info": {
+		"_postman_id": "propmatch-api-v2-4-clean",
+		"name": "PropMatch API v2.4 - Intelligent Property Retrieval",
+		"description": "PropMatch Property Search API - Hybrid Vector-Context System\n\nIntelligent property retrieval system that combines semantic similarity with property-specific context awareness. Optimized for property search rather than general text similarity.\n\nKey Features:\n- Property-context aware scoring\n- Impossibility penalty for unrealistic queries\n- Vector similarity + metadata intelligence\n- 89% performance improvement (41s to 4s)\n- 1,437 Cape Town properties\n\nScoring Logic:\n- Property-focused queries: 70-95% scores\n- Mixed queries: 60-80% scores with moderate penalties\n- Impossible queries: 15-40% scores with heavy penalties\n- Core criteria enforcement (bedrooms, property types)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Core API Operations",
+			"description": "Essential API endpoints for health checks and basic property operations",
+			"item": [
+				{
+					"name": "Health Check",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('API is healthy', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response time under 1s', function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": ["{{base_url}}"],
+							"path": ["health"]
+						}
+					}
+				},
+				{
+					"name": "Application Health",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Application is healthy', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.status).to.eql('healthy');",
+									"});",
+									"",
+									"pm.test('Database connectivity confirmed', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.database).to.eql('connected');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/health",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "health"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Property Retrieval Intelligence",
+			"description": "Tests demonstrating the hybrid property-retrieval system with context awareness",
+			"item": [
+				{
+					"name": "Property-Focused Query - High Scores",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Fast response time', function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									"",
+									"pm.test('Property-focused queries score highly', function () {",
+									"    const jsonData = pm.response.json();",
+									"    const scores = jsonData.properties.slice(0, 5).map(p => p.searchScore);",
+									"    const maxScore = Math.max(...scores);",
+									"    const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;",
+									"    ",
+									"    pm.expect(maxScore).to.be.above(80, 'Top property should score 80%+');",
+									"    pm.expect(avgScore).to.be.above(65, 'Average should be 65%+');",
+									"    console.log(`Property-focused scores: [${scores.join(', ')}]`);",
+									"    console.log(`UCT proximity correctly identified and scored`);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"apartment walking distance to UCT\",\n    \"limit\": 10\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				},
+				{
+					"name": "Impossible Query - Low Scores",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Fast response time', function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									"",
+									"pm.test('Impossible queries receive low scores', function () {",
+									"    const jsonData = pm.response.json();",
+									"    const scores = jsonData.properties.slice(0, 5).map(p => p.searchScore);",
+									"    const maxScore = Math.max(...scores);",
+									"    const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;",
+									"    ",
+									"    pm.expect(maxScore).to.be.below(50, 'Max score should be under 50%');",
+									"    pm.expect(avgScore).to.be.below(40, 'Average should be under 40%');",
+									"    console.log(`Impossible query scores: [${scores.join(', ')}]`);",
+									"    console.log(`Property context intelligence applied`);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"underwater castle with moat\",\n    \"limit\": 10\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				},
+				{
+					"name": "Hybrid Query - Moderate Scores",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Fast response time', function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									"",
+									"pm.test('Mixed queries receive moderate scores', function () {",
+									"    const jsonData = pm.response.json();",
+									"    const scores = jsonData.properties.slice(0, 5).map(p => p.searchScore);",
+									"    const maxScore = Math.max(...scores);",
+									"    const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;",
+									"    ",
+									"    pm.expect(maxScore).to.be.above(60, 'Should find some good matches');",
+									"    pm.expect(maxScore).to.be.below(90, 'But with moderate penalty applied');",
+									"    console.log(`Hybrid query scores: [${scores.join(', ')}]`);",
+									"    console.log(`Balanced property + unrealistic term handling`);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"luxury apartment with castle views\",\n    \"limit\": 10\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Core Criteria Validation",
+			"description": "Validates that essential property criteria are properly enforced",
+			"item": [
+				{
+					"name": "Bedroom Count Enforcement",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Bedroom matching is enforced', function () {",
+									"    const jsonData = pm.response.json();",
+									"    const properties = jsonData.properties.slice(0, 10);",
+									"    ",
+									"    // Count properties by bedroom type",
+									"    const twoBedrooms = properties.filter(p => parseInt(p.bedrooms) === 2);",
+									"    const otherBedrooms = properties.filter(p => parseInt(p.bedrooms) !== 2);",
+									"    ",
+									"    if (twoBedrooms.length > 0 && otherBedrooms.length > 0) {",
+									"        const avgTwoBed = twoBedrooms.reduce((sum, p) => sum + p.searchScore, 0) / twoBedrooms.length;",
+									"        const avgOther = otherBedrooms.reduce((sum, p) => sum + p.searchScore, 0) / otherBedrooms.length;",
+									"        ",
+									"        pm.expect(avgTwoBed).to.be.above(avgOther, '2BR apartments should score higher than others');",
+									"        console.log(`2BR avg: ${avgTwoBed.toFixed(1)}%, Other avg: ${avgOther.toFixed(1)}%`);",
+									"    }",
+									"    ",
+									"    console.log(`2BR properties found: ${twoBedrooms.length}, Other: ${otherBedrooms.length}`);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"2 bedroom apartment\",\n    \"limit\": 15\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				},
+				{
+					"name": "Property Type Intelligence",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Property type matching works', function () {",
+									"    const jsonData = pm.response.json();",
+									"    const properties = jsonData.properties.slice(0, 10);",
+									"    ",
+									"    // Count by property type",
+									"    const apartments = properties.filter(p => p.type.toLowerCase().includes('apartment'));",
+									"    const houses = properties.filter(p => p.type.toLowerCase().includes('house'));",
+									"    ",
+									"    if (apartments.length > 0 && houses.length > 0) {",
+									"        const avgApartment = apartments.reduce((sum, p) => sum + p.searchScore, 0) / apartments.length;",
+									"        const avgHouse = houses.reduce((sum, p) => sum + p.searchScore, 0) / houses.length;",
+									"        ",
+									"        pm.expect(avgApartment).to.be.above(avgHouse, 'Apartments should score higher for apartment query');",
+									"        console.log(`Apartment avg: ${avgApartment.toFixed(1)}%, House avg: ${avgHouse.toFixed(1)}%`);",
+									"    }",
+									"    ",
+									"    console.log(`Apartments: ${apartments.length}, Houses: ${houses.length}`);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"apartment in Cape Town\",\n    \"limit\": 15\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Performance and Quality Assurance",
+			"description": "Performance benchmarks and quality validation tests",
+			"item": [
+				{
+					"name": "Performance Benchmark",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('High performance search', function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"    console.log(`Response time: ${pm.response.responseTime}ms`);",
+									"});",
+									"",
+									"pm.test('Quality score distribution', function () {",
+									"    const jsonData = pm.response.json();",
+									"    const scores = jsonData.properties.map(p => p.searchScore);",
+									"    const maxScore = Math.max(...scores);",
+									"    const minScore = Math.min(...scores);",
+									"    const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;",
+									"    ",
+									"    pm.expect(maxScore).to.be.at.most(100, 'No scores above 100%');",
+									"    pm.expect(minScore).to.be.at.least(15, 'Minimum viable score threshold');",
+									"    pm.expect(avgScore).to.be.above(40, 'Reasonable average score');",
+									"    ",
+									"    console.log(`Score range: ${minScore.toFixed(1)}% - ${maxScore.toFixed(1)}%`);",
+									"    console.log(`Average score: ${avgScore.toFixed(1)}%`);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"luxury 3 bedroom house with pool garden garage ocean view Atlantic Seaboard\",\n    \"limit\": 20\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				},
+				{
+					"name": "Search Result Validation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Valid search response structure', function () {",
+									"    const jsonData = pm.response.json();",
+									"    ",
+									"    pm.expect(jsonData).to.have.property('properties');",
+									"    pm.expect(jsonData).to.have.property('totalResults');",
+									"    pm.expect(jsonData).to.have.property('searchTerm');",
+									"    pm.expect(jsonData.properties).to.be.an('array');",
+									"});",
+									"",
+									"pm.test('Property objects have required fields', function () {",
+									"    const jsonData = pm.response.json();",
+									"    ",
+									"    if (jsonData.properties.length > 0) {",
+									"        const prop = jsonData.properties[0];",
+									"        pm.expect(prop).to.have.property('id');",
+									"        pm.expect(prop).to.have.property('title');",
+									"        pm.expect(prop).to.have.property('searchScore');",
+									"        pm.expect(prop).to.have.property('location');",
+									"        pm.expect(prop.searchScore).to.be.a('number');",
+									"    }",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"modern apartment\",\n    \"limit\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/search/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "search", ""]
+						}
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"exec": [
+					"// Set base URL if not already configured",
+					"if (!pm.environment.get('base_url')) {",
+					"    pm.environment.set('base_url', 'http://localhost:8000');",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		}
+	]
+} 

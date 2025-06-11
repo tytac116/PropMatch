@@ -1,0 +1,807 @@
+{
+  "info": {
+    "name": "PropMatch AI-Centric Hybrid Search System",
+    "description": "Comprehensive testing collection for AI-Dominant Vector + BM25 + AI hybrid search system with intelligent property matching",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "2.0.0"
+  },
+  "auth": {
+    "type": "noauth"
+  },
+  "event": [],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🚀 System Health & Overview",
+      "item": [
+        {
+          "name": "Hybrid System Health Check",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/health/",
+            "description": "Verify all AI-centric hybrid system components are operational"
+          },
+          "response": []
+        },
+        {
+          "name": "System Architecture Overview",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-debug/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"test system architecture\",\n  \"limit\": 2\n}"
+            },
+            "description": "Get overview of hybrid system weights and parameters"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🎯 AI Excellence Demonstration",
+      "item": [
+        {
+          "name": "Perfect Match - AI Score 90+",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"property with pool and security\",\n  \"limit\": 3\n}"
+            },
+            "description": "Test AI's ability to score excellent matches (expect 85-95+ scores)"
+          },
+          "response": []
+        },
+        {
+          "name": "Luxury Waterfront Excellence",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"luxury waterfront apartment with sea views\",\n  \"limit\": 3\n}"
+            },
+            "description": "AI should identify premium coastal properties with 90+ scores"
+          },
+          "response": []
+        },
+        {
+          "name": "Family Home Perfect Match",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"4 bedroom family home with garden and garage\",\n  \"limit\": 4\n}"
+            },
+            "description": "Test AI's understanding of family requirements"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🧠 Semantic Intelligence Tests",
+      "item": [
+        {
+          "name": "Shopping Mall Synonym Understanding",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"3 bedroom house near shopping center\",\n  \"limit\": 4\n}"
+            },
+            "description": "AI should understand shopping center = shopping mall"
+          },
+          "response": []
+        },
+        {
+          "name": "Walking Distance Intelligence",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"apartment walking distance to UCT\",\n  \"limit\": 4\n}"
+            },
+            "description": "Test AI's understanding of realistic walking distance (800m)"
+          },
+          "response": []
+        },
+        {
+          "name": "Lifestyle Matching - Young Professional",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"modern apartment for young professional near city center\",\n  \"limit\": 4\n}"
+            },
+            "description": "AI should understand lifestyle implications and preferences"
+          },
+          "response": []
+        },
+        {
+          "name": "Investment Property Intelligence",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"good investment property with rental potential\",\n  \"limit\": 4\n}"
+            },
+            "description": "Test AI's understanding of investment criteria"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔍 BM25 Keyword Precision Tests",
+      "item": [
+        {
+          "name": "Exact Feature Keywords",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"pool security garage\",\n  \"limit\": 4\n}"
+            },
+            "description": "Test BM25 boost for exact feature matches (expect 19-20 BM25 contribution)"
+          },
+          "response": []
+        },
+        {
+          "name": "Location Keyword Precision",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"Camps Bay luxury apartment\",\n  \"limit\": 3\n}"
+            },
+            "description": "Test BM25 location keyword matching for premium areas"
+          },
+          "response": []
+        },
+        {
+          "name": "Multiple Feature Keywords",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"garden balcony fireplace aircon\",\n  \"limit\": 3\n}"
+            },
+            "description": "Test BM25 with multiple premium feature keywords"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🚫 Impossible Query Detection",
+      "item": [
+        {
+          "name": "Fantasy Property Detection",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"underwater castle with dragons\",\n  \"limit\": 3\n}"
+            },
+            "description": "AI should detect impossible query and score all properties 15-25"
+          },
+          "response": []
+        },
+        {
+          "name": "Impossible Location",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"house on the moon with earth views\",\n  \"limit\": 3\n}"
+            },
+            "description": "Test detection of geographically impossible locations"
+          },
+          "response": []
+        },
+        {
+          "name": "Physically Impossible Features",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"floating apartment with 50 bedrooms\",\n  \"limit\": 3\n}"
+            },
+            "description": "Test detection of physically impossible property features"
+          },
+          "response": []
+        },
+        {
+          "name": "Wrong Country Detection",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"apartment in New York Manhattan\",\n  \"limit\": 3\n}"
+            },
+            "description": "AI should detect wrong country/city and score low"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "⚖️ Comparison & Performance Analysis",
+      "item": [
+        {
+          "name": "AI-Centric vs AI-Only Comparison",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/compare-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"luxury apartment with sea views and security\",\n  \"limit\": 5\n}"
+            },
+            "description": "Compare AI-centric hybrid vs pure AI-only search performance"
+          },
+          "response": []
+        },
+        {
+          "name": "Performance - Complex Query",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"3 bedroom family home with garden, garage, security, near good schools and shopping centers, under R3 million\",\n  \"limit\": 6\n}"
+            },
+            "description": "Test performance and intelligence with complex multi-criteria query"
+          },
+          "response": []
+        },
+        {
+          "name": "Speed Test - Large Result Set",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"property for sale\",\n  \"limit\": 8\n}"
+            },
+            "description": "Test system performance with broader query and larger result set"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🏠 Specific Property Categories",
+      "item": [
+        {
+          "name": "Affordable First-Time Buyer",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"affordable apartment for first time buyer under R1.5 million\",\n  \"limit\": 4\n}"
+            },
+            "description": "Test AI understanding of affordability and first-time buyer needs"
+          },
+          "response": []
+        },
+        {
+          "name": "Retirement Living",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"quiet retirement home with easy access and medical facilities nearby\",\n  \"limit\": 4\n}"
+            },
+            "description": "Test understanding of retirement-specific requirements"
+          },
+          "response": []
+        },
+        {
+          "name": "Student Accommodation",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"student accommodation near UCT university\",\n  \"limit\": 4\n}"
+            },
+            "description": "Test AI's understanding of student housing needs and university proximity"
+          },
+          "response": []
+        },
+        {
+          "name": "Executive Housing",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"executive home in prestigious area with office space\",\n  \"limit\": 3\n}"
+            },
+            "description": "Test understanding of executive housing requirements"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🌍 Cape Town Specific Intelligence",
+      "item": [
+        {
+          "name": "Atlantic Seaboard Premium",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"Sea Point apartment with ocean views\",\n  \"limit\": 3\n}"
+            },
+            "description": "Test AI's knowledge of Cape Town's Atlantic Seaboard premium areas"
+          },
+          "response": []
+        },
+        {
+          "name": "Southern Suburbs Family Area",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"family home in Rondebosch near schools\",\n  \"limit\": 4\n}"
+            },
+            "description": "Test understanding of Southern Suburbs family-oriented characteristics"
+          },
+          "response": []
+        },
+        {
+          "name": "City Bowl Urban Living",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"modern loft in City Bowl near business district\",\n  \"limit\": 3\n}"
+            },
+            "description": "Test AI's understanding of City Bowl urban living characteristics"
+          },
+          "response": []
+        },
+        {
+          "name": "Northern Suburbs Value",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"good value family home in Bellville with shopping nearby\",\n  \"limit\": 4\n}"
+            },
+            "description": "Test understanding of Northern Suburbs value proposition"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔬 Debug & Scoring Analysis",
+      "item": [
+        {
+          "name": "Detailed Scoring Breakdown - Good Match",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-debug/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"3 bedroom house near shopping mall\",\n  \"limit\": 3\n}"
+            },
+            "description": "Analyze detailed scoring for realistic good match"
+          },
+          "response": []
+        },
+        {
+          "name": "Scoring Analysis - Perfect Match",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-debug/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"luxury waterfront apartment with pool and security\",\n  \"limit\": 3\n}"
+            },
+            "description": "Analyze scoring components for excellent matches"
+          },
+          "response": []
+        },
+        {
+          "name": "BM25 Effectiveness Analysis",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-debug/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"garden garage security pool\",\n  \"limit\": 3\n}"
+            },
+            "description": "Analyze BM25 keyword matching effectiveness"
+          },
+          "response": []
+        },
+        {
+          "name": "AI Poor Match Analysis",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-debug/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"flying house with wings\",\n  \"limit\": 3\n}"
+            },
+            "description": "Analyze how AI handles impossible queries in scoring"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📊 Edge Cases & Stress Tests",
+      "item": [
+        {
+          "name": "Single Word Query",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"luxury\",\n  \"limit\": 3\n}"
+            },
+            "description": "Test system behavior with minimal query input"
+          },
+          "response": []
+        },
+        {
+          "name": "Ultra-Complex Query",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"I need a beautiful modern 4 bedroom family home with at least 2.5 bathrooms that has a large garden for children and pets to play in, preferably with a swimming pool and good security features, close to excellent schools and major shopping centers, with easy access to highways but in a quiet residential area, under R4 million, suitable for entertaining guests with indoor and outdoor living spaces\",\n  \"limit\": 5\n}"
+            },
+            "description": "Test AI's ability to handle very complex detailed requirements"
+          },
+          "response": []
+        },
+        {
+          "name": "Ambiguous Query",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"something nice and affordable\",\n  \"limit\": 3\n}"
+            },
+            "description": "Test system behavior with vague, ambiguous queries"
+          },
+          "response": []
+        },
+        {
+          "name": "Contradictory Requirements",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"cheap luxury mansion under R500k\",\n  \"limit\": 3\n}"
+            },
+            "description": "Test AI's handling of contradictory or unrealistic combinations"
+          },
+          "response": []
+        },
+        {
+          "name": "Typos and Misspellings",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"3 bedroon hous neer shoping mal\",\n  \"limit\": 3\n}"
+            },
+            "description": "Test system robustness with spelling errors"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📈 Token Usage & Performance Monitoring",
+      "item": [
+        {
+          "name": "Token Efficiency - Simple Query",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"2 bedroom apartment\",\n  \"limit\": 3\n}"
+            },
+            "description": "Monitor token usage for simple queries (expect ~1800-2500 tokens)"
+          },
+          "response": []
+        },
+        {
+          "name": "Token Usage - Complex Query",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"luxury 4 bedroom family home with pool, garden, garage, security, near excellent schools and shopping centers, in prestigious area with sea or mountain views\",\n  \"limit\": 5\n}"
+            },
+            "description": "Monitor token usage for complex queries"
+          },
+          "response": []
+        },
+        {
+          "name": "Response Time - Standard Query",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/hybrid-test/hybrid-search/",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"modern apartment with views\",\n  \"limit\": 4\n}"
+            },
+            "description": "Monitor response times (expect 4-7 seconds total)"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+} 
