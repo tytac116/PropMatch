@@ -11,6 +11,7 @@ pydantic-settings==2.1.0
 sqlalchemy==2.0.23
 psycopg2-binary==2.9.9 
 alembic==1.12.1
+supabase>=2.0.0
 
 # Environment and configuration
 python-dotenv==1.0.0
@@ -19,20 +20,20 @@ python-dotenv==1.0.0
 slowapi==0.1.9
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
-python-multipart==0.0.6
 
 # Data processing (Python 3.12 compatible versions)
 pandas==2.2.0
 numpy==1.26.4
 
-# AI and ML (Phase 2) - Compatible versions
+# AI and ML - Compatible versions
 openai>=1.6.1
 pinecone-client>=2.2.4
 langchain>=0.0.335
 langchain-openai>=0.0.2
 langchain-pinecone>=0.0.1
+langchain-community>=0.0.10
 
-# Caching (Phase 3)
+# Caching
 redis>=5.0.1
 hiredis>=2.2.3
 

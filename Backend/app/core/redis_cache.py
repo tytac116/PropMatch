@@ -8,7 +8,7 @@ import redis
 import hashlib
 import json
 from typing import Optional, Dict, Any
-from langchain.cache import RedisCache
+from langchain_community.cache import RedisCache
 from langchain.globals import set_llm_cache
 
 from app.core.config import settings
