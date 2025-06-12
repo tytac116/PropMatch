@@ -9,6 +9,7 @@ from pydantic import BaseModel
 
 from app.models.property import PropertySearchRequest, PropertySearchResponse, Property
 from app.services.ai_rerank_service import AIRerankService
+from app.core.langsmith_config import get_langsmith_status
 
 logger = logging.getLogger(__name__)
 

@@ -11,6 +11,10 @@ import json
 import math
 from openai import AsyncOpenAI
 
+# LangSmith imports
+from langsmith import traceable
+from langsmith.wrappers import wrap_openai
+
 from app.models.property import Property, PropertySearchRequest
 from app.services.supabase_property_service import SupabasePropertyService
 from app.services.vector_service import VectorService
@@ -24,12 +28,20 @@ class AIRerankService:
     def __init__(self):
         self.property_service = SupabasePropertyService()
         self.vector_service = VectorService()
-        self.openai_client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY) if settings.OPENAI_API_KEY else None
+        
+        # Initialize OpenAI client with LangSmith wrapper if API key is available
+        if settings.OPENAI_API_KEY:
+            base_client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+            self.openai_client = wrap_openai(base_client) if settings.LANGSMITH_TRACING and settings.LANGSMITH_API_KEY else base_client
+        else:
+            self.openai_client = None
+            
         self.max_context_properties = 12  # Reduced for richer property profiles
         self.primary_model = "gpt-4o-mini"  # Reverted to gpt-4o-mini for evaluation
         self.fallback_model = "gpt-3.5-turbo"  # Changed fallback since we're using gpt-4o-mini as primary
         self.token_usage = {}  # Track token usage
         
+    @traceable(name="ai_search_and_rerank")
     async def search_and_rerank(self, search_request: PropertySearchRequest) -> Tuple[List[Property], Dict[str, float]]:
         """
         Perform vector search then intelligent AI re-ranking
@@ -103,6 +115,7 @@ class AIRerankService:
         
         return final_properties, timing
     
+    @traceable(name="ai_intelligent_rerank_with_batching")
     async def _intelligent_rerank_with_batching(self, properties: List[Property], query: str) -> List[Property]:
         """Enhanced AI re-ranking with smart batching and context management"""
         
@@ -136,6 +149,7 @@ class AIRerankService:
             # Fallback to original order with vector scores
             return properties
     
+    @traceable(name="ai_enhanced_rerank_batch")
     async def _enhanced_ai_rerank_batch(self, properties: List[Property], query: str, batch_info: str) -> List[Property]:
         """Enhanced AI re-ranking for a batch of properties with detailed token tracking"""
         

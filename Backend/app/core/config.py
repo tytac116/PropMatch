@@ -32,6 +32,11 @@ class Settings(BaseSettings):
     OPENAI_MODEL: str = "gpt-4o-mini"  # Cost-effective for explanations
     EMBEDDING_MODEL: str = "text-embedding-3-small"  # Cost-effective for embeddings
     
+    # LangSmith settings for tracing
+    LANGSMITH_API_KEY: str = os.getenv("LANGSMITH_API_KEY", "")
+    LANGSMITH_TRACING: bool = os.getenv("LANGSMITH_TRACING", "true").lower() == "true"
+    LANGSMITH_PROJECT: str = os.getenv("LANGSMITH_PROJECT", "PropMatch-Backend")
+    
     # Pinecone settings
     # TODO: Get your Pinecone API key from https://app.pinecone.io/
     PINECONE_API_KEY: str = os.getenv("PINECONE_API_KEY", "")

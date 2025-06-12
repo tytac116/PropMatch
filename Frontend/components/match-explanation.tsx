@@ -242,7 +242,7 @@ export function MatchExplanation({
               <span className="text-xs bg-green-500/10 text-green-600 px-2 py-1 rounded-full flex items-center gap-1">
                 <Zap className="h-3 w-3" />
                 Cached
-              </span>
+          </span>
             )}
           </div>
         </div>

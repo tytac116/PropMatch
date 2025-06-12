@@ -32,6 +32,7 @@ langchain>=0.0.335
 langchain-openai>=0.0.2
 langchain-pinecone>=0.0.1
 langchain-community>=0.0.10
+langsmith>=0.1.0
 
 # Caching
 redis>=5.0.1

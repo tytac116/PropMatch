@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 from app.api.routes import properties, search
 from app.api.v1 import test_endpoints, hybrid_test_endpoints, explanation_endpoints, security_endpoints
 from app.core.config import settings
+from app.core.langsmith_config import initialize_langsmith, get_langsmith_status
 from app.core.security import (
     limiter, 
     security_middleware, 
@@ -20,6 +21,9 @@ from app.core.security import (
 
 # Load environment variables
 load_dotenv()
+
+# Initialize LangSmith tracing
+initialize_langsmith()
 
 # Configure logging to show only important information
 logging.basicConfig(
@@ -125,9 +129,12 @@ async def root(request: Request):
 
 @app.get("/health")
 async def health_check():
+    langsmith_status = get_langsmith_status()
+    
     return {
         "status": "healthy", 
         "security": "active",
+        "langsmith_tracing": langsmith_status,
         "protection": {
             "rate_limiting": True,
             "ddos_protection": True,

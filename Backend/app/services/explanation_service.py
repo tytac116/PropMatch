@@ -12,6 +12,9 @@ from langchain_openai import ChatOpenAI
 from langchain.schema import HumanMessage
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
+# LangSmith imports
+from langsmith import traceable
+
 from app.core.config import settings
 from app.core.redis_cache import explanation_cache
 from app.models.property import Property
@@ -152,6 +155,7 @@ Respond ONLY with the JSON structure above."""
         except (ValueError, TypeError):
             return default
 
+    @traceable
     async def generate_explanation(
         self, 
         search_query: str, 
@@ -214,6 +218,7 @@ Respond ONLY with the JSON structure above."""
             logger.error(f"Error generating explanation: {e}")
             raise Exception(f"Failed to generate explanation: {e}")
     
+    @traceable
     async def stream_explanation(
         self, 
         search_query: str, 
