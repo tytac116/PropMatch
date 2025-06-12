@@ -36,12 +36,12 @@ class Property(BaseModel):
     id: str
     title: str
     description: str
-    price: int
+    price: Union[int, float]  # Allow float prices that will be rounded
     currency: str = "ZAR"
     type: PropertyType
-    bedrooms: int
+    bedrooms: Union[int, float]  # Some listings might have decimal bedrooms
     bathrooms: Union[int, float]  # Can be 2.5, 3.5, etc.
-    area: int
+    area: Union[int, float]  # Area might come as float
     areaUnit: str = "m²"
     location: Location
     images: List[str]
@@ -50,7 +50,7 @@ class Property(BaseModel):
     listedDate: str  # ISO format date string
     
     # AI-related fields (optional)
-    searchScore: Optional[int] = None
+    searchScore: Optional[Union[int, float]] = None
     matchExplanation: Optional[str] = None
     
     # Additional property details from scraped data
@@ -59,12 +59,12 @@ class Property(BaseModel):
     street_address: Optional[str] = None
     suburb: Optional[str] = None
     province: Optional[str] = None
-    kitchens: Optional[int] = None
-    garages: Optional[int] = None
+    kitchens: Optional[Union[int, float]] = None
+    garages: Optional[Union[int, float]] = None
     parking: Optional[bool] = None
-    parking_spaces: Optional[int] = None
-    floor_size: Optional[int] = None
-    erf_size: Optional[int] = None
+    parking_spaces: Optional[Union[int, float]] = None
+    floor_size: Optional[Union[int, float]] = None
+    erf_size: Optional[Union[int, float]] = None
     levies: Optional[str] = None
     rates: Optional[str] = None
     rates_and_taxes: Optional[str] = None

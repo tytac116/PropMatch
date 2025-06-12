@@ -6,6 +6,7 @@ Direct integration with Supabase API for property operations
 import logging
 from typing import List, Optional, Dict, Any
 import json
+import random
 
 from app.core.config import settings
 from app.models.property import Property, PropertySearchFilters, Location, PointOfInterest, PropertyType, PropertyStatus
@@ -194,9 +195,20 @@ class SupabasePropertyService:
             return []
         
         try:
-            # Get a random sample using PostgreSQL random function
-            # Note: Use 'random' without parentheses for Supabase/PostgREST
-            result = self.supabase.table('properties').select("*").order('random').limit(sample_size).execute()
+            # Get total count first
+            count_result = self.supabase.table('properties').select("listing_number", count="exact").execute()
+            total_count = count_result.count if hasattr(count_result, 'count') else 0
+            
+            if total_count == 0:
+                logger.warning("No properties found in database")
+                return []
+            
+            # Calculate offset for random sampling
+            max_offset = max(0, total_count - sample_size)
+            random_offset = random.randint(0, max_offset) if max_offset > 0 else 0
+            
+            # Get a sample using offset
+            result = self.supabase.table('properties').select("*").range(random_offset, random_offset + sample_size - 1).execute()
             
             if not result.data:
                 logger.warning("No properties found for sample")
@@ -360,6 +372,12 @@ class SupabasePropertyService:
             if value is None:
                 return default
             try:
+                # Handle float values by rounding them first
+                if isinstance(value, float):
+                    return int(round(value))
+                # Handle string values that might contain decimals
+                if isinstance(value, str) and '.' in value:
+                    return int(round(float(value)))
                 return int(str(value))
             except:
                 return default
@@ -368,7 +386,10 @@ class SupabasePropertyService:
             if value is None:
                 return default
             try:
-                return float(str(value))
+                # Handle string values that might be formatted with commas
+                if isinstance(value, str):
+                    value = value.replace(',', '')
+                return float(value)
             except:
                 return default
         
