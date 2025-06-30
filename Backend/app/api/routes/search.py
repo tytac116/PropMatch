@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, Body, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Body, Query, Request, Response
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 import logging
 import time
@@ -24,6 +25,13 @@ router = APIRouter()
 # Initialize services - Phase 2 enhanced service with fallback
 enhanced_search_service = EnhancedSearchService()
 fallback_search_service = SearchService()
+
+def add_cors_headers(response: Response):
+    """Add CORS headers to response"""
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Expose-Headers"] = "*"
+    return response
 
 @router.post("/", response_model=PropertySearchResponse)
 @rate_limit_search
@@ -92,68 +100,64 @@ async def search_properties(
 @rate_limit_search
 async def simple_search(
     request: Request,
+    response: Response,
     query: str = Body(..., embed=True),
     limit: int = Body(20, embed=True),
     use_ai: bool = Body(True, embed=True),
     db: Session = Depends(get_db)
 ):
     """
-    Simple search endpoint for quick testing with AI capabilities
-    
-    Security: Rate limited to 10 requests/minute per IP
+    Simple property search endpoint
     """
     try:
         # Validate and sanitize search input
         sanitized_query = validate_search_input(query)
         
-        # Limit result count to prevent resource abuse
-        if limit > 50:
-            limit = 50
-        
-        from app.models.property import PropertySearchRequest
-        
-        search_request = PropertySearchRequest(
-            query=sanitized_query,
-            filters=None,
-            page=1,
-            page_size=limit
-        )
-        
+        # Use enhanced search service with AI
         if use_ai:
-            fresh_enhanced_service = EnhancedSearchService()
-            results = await fresh_enhanced_service.search_properties(search_request)
+            search_request = PropertySearchRequest(
+                query=sanitized_query,
+                page=1,
+                page_size=limit
+            )
+            
+            start_time = time.time()
+            search_results = await enhanced_search_service.search_properties(search_request)
+            search_time = time.time() - start_time
+            
+            search_logger.info(
+                f"AI Search completed in {search_time:.2f}s - "
+                f"Query: '{sanitized_query}', "
+                f"Results: {len(search_results.properties)}"
+            )
+            
+            response = JSONResponse(content=search_results.model_dump())
+            return add_cors_headers(response)
+            
+        # Fallback to basic search
         else:
             results = await fallback_search_service.search_properties(
-                db=db,
-                search_request=search_request
+                query=sanitized_query,
+                limit=limit,
+                db=db
             )
-        
-        return {
-            "query": sanitized_query,
-            "found": results.totalResults,
-            "ai_powered": use_ai,
-            "properties": [
-                {
-                    "id": prop.id,
-                    "title": prop.title,
-                    "price": prop.price,
-                    "location": f"{prop.location.neighborhood}, {prop.location.city}",
-                    "type": prop.type.value if hasattr(prop.type, 'value') else str(prop.type),
-                    "bedrooms": prop.bedrooms,
-                    "bathrooms": prop.bathrooms,
-                    "searchScore": getattr(prop, 'searchScore', 0),
-                    "url": prop.url
-                }
-                for prop in results.properties
-            ]
-        }
-        
-    except HTTPException:
-        # Re-raise HTTP exceptions (like validation errors)
-        raise
+            
+            response = JSONResponse(content={"properties": [r.model_dump() for r in results]})
+            return add_cors_headers(response)
+            
+    except HTTPException as he:
+        error_response = JSONResponse(
+            status_code=he.status_code,
+            content={"detail": he.detail}
+        )
+        return add_cors_headers(error_response)
     except Exception as e:
         logger.error(f"Error in simple search: {e}")
-        raise HTTPException(status_code=500, detail="Search service temporarily unavailable")
+        error_response = JSONResponse(
+            status_code=500,
+            content={"detail": "Search service temporarily unavailable"}
+        )
+        return add_cors_headers(error_response)
 
 @router.get("/test-vector")
 @rate_limit_strict

@@ -161,14 +161,14 @@ export function SearchBar({ onSearch, className, suggestions = [], initialQuery 
               : "opacity-0 -translate-y-2 max-h-0 border-0"
           )}>
             <div className="overflow-auto max-h-60">
-              <div className="p-3 text-sm text-muted-foreground">
+              <div className="p-3 text-sm text-muted-foreground/80">
                 Try searching for:
               </div>
               <ul className="p-2 space-y-1">
                 {suggestions.map((suggestion, index) => (
                   <li key={index}>
                     <button
-                      className="w-full text-left p-3 hover:bg-muted rounded-md transition-colors text-sm duration-150"
+                      className="w-full text-left p-3 hover:bg-muted rounded-md transition-colors text-sm duration-150 text-foreground"
                       onClick={() => handleSuggestionClick(suggestion)}
                     >
                       {suggestion}

@@ -118,14 +118,14 @@ export function PropertyViewer({ property, searchTerm, onBack, enableStreaming =
                 </CarouselContent>
                 {displayImages.length > 1 && (
                   <>
-                    <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10" />
-                    <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10" />
+                <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10" />
+                <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10" />
                   </>
                 )}
               </Carousel>
               
               {displayImages.length > 1 && (
-                <div className="absolute bottom-4 right-4 bg-black/50 text-white px-2 py-1 rounded text-sm">
+              <div className="absolute bottom-4 right-4 bg-black/50 text-white px-2 py-1 rounded text-sm">
                   {currentCarouselIndex + 1} / {displayImages.length}
                 </div>
               )}
@@ -161,7 +161,7 @@ export function PropertyViewer({ property, searchTerm, onBack, enableStreaming =
                 <span className="text-sm">{property.location.address}, {property.location.neighborhood}</span>
               </div>
             </div>
-            
+
             {/* Property Features - Mobile */}
             <div className="bg-card border rounded-lg p-4">
               <h3 className="text-lg font-semibold mb-3">Features & Amenities</h3>
@@ -266,9 +266,9 @@ export function PropertyViewer({ property, searchTerm, onBack, enableStreaming =
                 <div className="flex items-center text-muted-foreground">
                   <MapPin className="h-4 w-4 mr-1 flex-shrink-0" />
                   <span className="text-sm lg:text-base">{property.location.address}, {property.location.neighborhood}</span>
-                </div>
-              </div>
-              
+            </div>
+          </div>
+
               {/* Property Features */}
               <div className="bg-card border rounded-lg p-4 lg:p-6">
                 <h3 className="text-lg font-semibold mb-4">Features & Amenities</h3>
@@ -302,7 +302,7 @@ export function PropertyViewer({ property, searchTerm, onBack, enableStreaming =
                 </div>
               </div>
             </div>
-
+            
             {/* Right Column - AI Content and Description */}
             <div className="flex flex-col space-y-4 lg:space-y-6">
               {/* AI Explanation - only show if we have a search term */}
