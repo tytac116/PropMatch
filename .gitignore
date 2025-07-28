@@ -1,0 +1,60 @@
+# Environment files
+.env
+*.env
+.env.*
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+.venv/
+.env/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Logs
+*.log
+
+# IDE-specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Sensitive configuration files
+config.ini
+*.cfg
+
+# Temporary files
+*.tmp
+*.bak
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Frontend and Backend specific ignores
+Frontend/node_modules/
+Backend/node_modules/
+Frontend/.next/
+Frontend/out/
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Compiled binary files
+*.exe
+*.dll
+*.so
+*.dylib 

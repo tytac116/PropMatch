@@ -31,7 +31,10 @@ class AIRerankService:
         
         # Initialize OpenAI client with LangSmith wrapper if API key is available
         if settings.OPENAI_API_KEY:
-            base_client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+            base_client = AsyncOpenAI(
+                api_key=settings.OPENAI_API_KEY,
+                http_client=None  # Explicitly set http_client to None to avoid proxy issues
+            )
             self.openai_client = wrap_openai(base_client) if settings.LANGSMITH_TRACING and settings.LANGSMITH_API_KEY else base_client
         else:
             self.openai_client = None

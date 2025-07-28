@@ -46,7 +46,8 @@ class VectorService:
             # Initialize OpenAI embeddings
             self.embeddings = OpenAIEmbeddings(
                 openai_api_key=settings.OPENAI_API_KEY,
-                model=settings.EMBEDDING_MODEL
+                model=settings.EMBEDDING_MODEL,
+                client=None  # Explicitly set client to None to avoid proxy issues
             )
             
             # Initialize Pinecone
