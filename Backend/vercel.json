@@ -15,12 +15,6 @@
   "env": {
     "PYTHON_VERSION": "3.12"
   },
-  "functions": {
-    "api/index.py": {
-      "maxDuration": 30,
-      "memory": 1024
-    }
-  },
   "regions": ["iad1"],
   "installCommand": "pip install -r requirements-vercel.txt"
 }
