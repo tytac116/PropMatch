@@ -39,7 +39,7 @@ search_logger.setLevel(logging.INFO)
 security_logger = logging.getLogger('security')
 security_logger.setLevel(logging.WARNING)
 
-# Reduce noise from external libraries
+#Reduce noise from external libraries
 logging.getLogger('uvicorn.access').setLevel(logging.WARNING)
 logging.getLogger('pinecone_plugin_interface').setLevel(logging.ERROR)
 logging.getLogger('httpx').setLevel(logging.WARNING)
