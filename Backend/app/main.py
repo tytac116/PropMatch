@@ -78,7 +78,7 @@ async def security_middleware_handler(request: Request, call_next):
 # Security middleware
 app.add_middleware(
     TrustedHostMiddleware, 
-    allowed_hosts=["localhost", "127.0.0.1", "propmatch.onrender.com", "*"]  # Allow Render domain
+    allowed_hosts=["localhost", "127.0.0.1", "propmatch.onrender.com", "*.vercel.app", "*"]  # Allow Render and Vercel domains
 )
 
 # CORS middleware for frontend
@@ -86,8 +86,10 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",  # Next.js dev server
-        "https://propmatchai.vercel.app",  # Your actual Vercel domain
+        "https://propmatchai.vercel.app",  # Frontend Vercel domain
         "https://propmatch.onrender.com",  # Backend domain for docs
+        "https://*.vercel.app",  # All Vercel subdomains for backend
+        "https://propmatch-backend.vercel.app",  # Backend Vercel domain
         # Add more domains as needed
     ],
     allow_credentials=True,

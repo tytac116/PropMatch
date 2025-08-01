@@ -1,0 +1,45 @@
+# Vercel-optimized requirements for PropMatch FastAPI backend
+# Core FastAPI dependencies
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+
+# Pydantic and settings
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# Database (using lightweight versions for serverless)
+sqlalchemy==2.0.23
+psycopg2-binary==2.9.9
+supabase>=2.0.0
+
+# Environment configuration
+python-dotenv==1.0.0
+
+# Security and Rate Limiting (serverless-compatible)
+slowapi==0.1.9
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
+# Data processing (lightweight for serverless)
+pandas==2.2.0
+numpy==1.26.4
+
+# AI and ML - Essential only
+openai>=1.6.1
+langchain>=0.0.335
+langchain-openai>=0.0.2
+langsmith>=0.1.0
+
+# Optional: Comment out if not using in serverless
+# pinecone-client>=2.2.4
+# langchain-pinecone>=0.0.1
+# langchain-community>=0.0.10
+
+# Caching - Use Vercel's built-in caching instead
+# redis>=5.0.1
+# hiredis>=2.2.3
+
+# Essential utilities only
+tenacity>=8.2.3
+httpx>=0.25.2
